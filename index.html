@@ -54,6 +54,8 @@
   .start-row{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-top:20px;flex-wrap:wrap}.start-hint{font-size:12px;color:var(--muted)}
   .btn{appearance:none;border:0;border-radius:12px;padding:11px 16px;font-weight:800;cursor:pointer;transition:transform .12s ease,box-shadow .12s ease,background .12s ease}
   .btn:hover{transform:translateY(-1px)}.btn:active{transform:translateY(0)}.btn-primary{background:linear-gradient(135deg,#0f766e,#155e75);color:#fff;box-shadow:0 8px 16px rgba(15,118,110,.2)}.btn-secondary{background:#edf4f6;color:#17424f}.btn-ghost{background:#fff;border:1px solid #cad9df;color:#17424f}.btn-danger{background:#fff3f3;color:#991b1b;border:1px solid #fecaca}.btn:disabled{opacity:.45;cursor:not-allowed;transform:none}
+  .wrong-retry-box{margin-top:20px;border:1px solid #f5d08a;background:#fffaf0;border-radius:18px;padding:18px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+  .wrong-retry-box h3{margin:0 0 5px;font-size:16px}.wrong-retry-box p{margin:0;color:#775b22;font-size:13px;line-height:1.6}.wrong-retry-box strong{color:#9a5c00}
   .hidden{display:none !important}
   .quiz-shell{margin-top:25px}
   .quiz-meta{display:flex;justify-content:space-between;gap:16px;align-items:center;margin:0 0 12px;flex-wrap:wrap}.quiz-meta .left{display:flex;gap:9px;align-items:center;flex-wrap:wrap}.tag{background:#e8f4f5;color:#075d68;border-radius:999px;padding:7px 10px;font-size:12px;font-weight:800}.tag.muted{background:#eef2f5;color:#607080}
@@ -143,6 +145,16 @@
           </div>
         </div>
       </div>
+      <div class="wrong-retry-box" aria-labelledby="wrongRetryTitle">
+        <div>
+          <h3 id="wrongRetryTitle">錯題重考</h3>
+          <p id="wrongRetryHint">目前沒有錯題紀錄。交卷後答錯或未答的題目會自動加入。</p>
+        </div>
+        <div class="action-set">
+          <button class="btn btn-secondary" id="startWrongExamBtn" disabled>開始錯題重考</button>
+          <button class="btn btn-ghost" id="clearWrongBtn" disabled>清空錯題</button>
+        </div>
+      </div>
       <div class="start-row">
         <div class="start-hint" id="poolHint">目前範圍共有 71 題；選 20 題後將隨機抽題。</div>
         <button class="btn btn-primary" id="startBtn">開始刷題 →</button>
@@ -209,7 +221,8 @@ const sectionOrder = ["第九課｜我們的選擇（課本）", "第十課｜�
 const $ = (id) => document.getElementById(id);
 const esc = (value) => String(value).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
 const labels = ['A','B','C','D'];
-const state = { pool: [], index: 0, answers: {}, instant: false, submitted: false, lastPool: [] };
+const WRONG_STORAGE_KEY = 'civicsQuizWrongKeys.v1';
+const state = { pool: [], index: 0, answers: {}, instant: false, submitted: false, lastPool: [], mode: 'practice' };
 
 function shuffle(items) {
   const out = items.slice();
@@ -221,6 +234,40 @@ function shuffle(items) {
 }
 function choiceLabel(answer) { return `${answer}.`; }
 function sectionCount(section) { return questionBank.filter(q => q.section === section).length; }
+function questionKey(q) { return `${q.section}::${q.num}::${q.stem}`; }
+function loadWrongKeys() {
+  try {
+    const parsed = JSON.parse(localStorage.getItem(WRONG_STORAGE_KEY) || '[]');
+    return Array.isArray(parsed) ? parsed.filter(Boolean) : [];
+  } catch {
+    return [];
+  }
+}
+function saveWrongKeys(keys) {
+  localStorage.setItem(WRONG_STORAGE_KEY, JSON.stringify([...new Set(keys)]));
+}
+function wrongQuestions() {
+  const keys = new Set(loadWrongKeys());
+  return questionBank.filter(q => keys.has(questionKey(q)));
+}
+function refreshWrongExamPanel() {
+  const wrong = wrongQuestions();
+  $('wrongRetryHint').innerHTML = wrong.length
+    ? `已累積 <strong>${wrong.length}</strong> 題錯題。重考答對後會自動從錯題庫移除。`
+    : '目前沒有錯題紀錄。交卷後答錯或未答的題目會自動加入。';
+  $('startWrongExamBtn').disabled = wrong.length === 0;
+  $('clearWrongBtn').disabled = wrong.length === 0;
+}
+function updateWrongBankAfterSubmit() {
+  const keys = new Set(loadWrongKeys());
+  state.pool.forEach((q, i) => {
+    const key = questionKey(q);
+    if (state.answers[i] === q.answer) keys.delete(key);
+    else keys.add(key);
+  });
+  saveWrongKeys([...keys]);
+  refreshWrongExamPanel();
+}
 
 function populateSections() {
   const select = $('sectionSelect');
@@ -245,7 +292,7 @@ function show(view) {
   ['setupView','quizView','resultsView'].forEach(id => $(id).classList.toggle('hidden', id !== view));
   window.scrollTo({top: 0, behavior: 'smooth'});
 }
-function startPractice(providedPool=null) {
+function startPractice(providedPool=null, mode='practice') {
   let pool = providedPool ? providedPool.slice() : currentScope();
   if (!pool.length) { toast('沒有可練習的題目。'); return; }
   const count = selectedCount();
@@ -257,6 +304,7 @@ function startPractice(providedPool=null) {
   state.answers = {};
   state.instant = $('instantToggle').checked;
   state.submitted = false;
+  state.mode = mode;
   show('quizView');
   renderQuestion();
 }
@@ -325,6 +373,7 @@ function submitPractice() {
   const unanswered = total - Object.keys(state.answers).length;
   const pct = Math.round(correct / total * 100);
   $('scoreDesc').textContent = `本次正確率 ${pct}%。${unanswered ? `另有 ${unanswered} 題未作答，已計為未答。` : '所有題目均已作答。'}`;
+  updateWrongBankAfterSubmit();
   $('reviewList').innerHTML = state.pool.map((q,i) => {
     const a = state.answers[i] || '未作答';
     const correctFlag = a === q.answer;
@@ -336,7 +385,7 @@ function submitPractice() {
   }).join('');
   const wrong = state.pool.filter((q,i)=>state.answers[i] !== q.answer);
   $('retryWrongBtn').disabled = wrong.length === 0;
-  $('retryWrongBtn').textContent = wrong.length ? `只重練錯題（${wrong.length} 題）` : '本次沒有錯題';
+  $('retryWrongBtn').textContent = wrong.length ? `錯題重考（本次 ${wrong.length} 題）` : '本次沒有錯題';
   show('resultsView');
 }
 function toast(message) {
@@ -345,6 +394,19 @@ function toast(message) {
 }
 
 $('startBtn').addEventListener('click', ()=>startPractice());
+$('startWrongExamBtn').addEventListener('click', ()=>{
+  const wrong = wrongQuestions();
+  if (!wrong.length) { toast('目前沒有錯題可重考。'); return; }
+  startPractice(wrong, 'wrong-exam');
+});
+$('clearWrongBtn').addEventListener('click', ()=>{
+  if (!wrongQuestions().length) return;
+  if (confirm('確定要清空目前累積的錯題紀錄？')) {
+    saveWrongKeys([]);
+    refreshWrongExamPanel();
+    toast('已清空錯題紀錄。');
+  }
+});
 $('sectionSelect').addEventListener('change', updatePoolHint);
 document.querySelectorAll('input[name="qcount"]').forEach(el=>el.addEventListener('change',updatePoolHint));
 $('prevBtn').addEventListener('click',prevQuestion);
@@ -355,7 +417,7 @@ $('newPracticeBtn').addEventListener('click',()=>show('setupView'));
 $('retryWrongBtn').addEventListener('click',()=>{
   const wrong = state.pool.filter((q,i)=>state.answers[i] !== q.answer);
   if (!wrong.length) return;
-  startPractice(wrong);
+  startPractice(wrong, 'wrong-exam');
 });
 document.addEventListener('keydown', (e)=>{
   if ($('quizView').classList.contains('hidden')) return;
@@ -367,6 +429,7 @@ document.addEventListener('keydown', (e)=>{
   if (e.key === 'ArrowLeft') prevQuestion();
 });
 populateSections();
+refreshWrongExamPanel();
 $('totalBadge').textContent = questionBank.length;
 $('heroTotal').textContent = questionBank.length;
 </script>
