@@ -3,6 +3,9 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+<meta http-equiv="Pragma" content="no-cache" />
+<meta http-equiv="Expires" content="0" />
 <meta name="theme-color" content="#164e63" id="themeColorMeta" />
 <title>公民與社會刷題網站｜71 題題庫</title>
 <style>
@@ -16,14 +19,19 @@
   html{scroll-behavior:smooth}
   body{
     margin:0; color:var(--ink); font-family:"Microsoft JhengHei","Noto Sans TC",system-ui,sans-serif;
-    background:linear-gradient(155deg,#f3fbfd 0%,#e8f2f6 44%,#f9fcfd 100%); min-height:100vh;
+    background:
+      linear-gradient(155deg,rgba(243,251,253,.80) 0%,rgba(232,242,246,.74) 44%,rgba(249,252,253,.82) 100%),
+      url("assets/site-background.jpg?v=20260626") center / cover fixed no-repeat;
+    min-height:100vh;
   }
   body.dark-mode{
     --ink:#e6edf3; --muted:#9fb2bd; --line:#29414d; --paper:#132630;
     --bg:#07151b; --navy:#37b4a6; --navy2:#4fc7b6; --mint:#14342f;
     --amber:#f8c15b; --good:#62d783; --bad:#ff7b7b; --bad-bg:#3a171a;
     --good-bg:#10351e; --shadow:0 18px 44px rgba(0,0,0,.34);
-    background:linear-gradient(155deg,#061018 0%,#10262d 48%,#07151b 100%);
+    background:
+      linear-gradient(155deg,rgba(6,16,24,.86) 0%,rgba(16,38,45,.82) 48%,rgba(7,21,27,.88) 100%),
+      url("assets/site-background.jpg?v=20260626") center / cover fixed no-repeat;
   }
   button,select,input{font:inherit}
   .topbar{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.92);backdrop-filter:blur(12px);border-bottom:1px solid #dbe7ec}
@@ -266,6 +274,8 @@ const labels = ['A','B','C','D'];
 const WRONG_STORAGE_KEY = 'civicsQuizWrongKeys.v1';
 const THEME_STORAGE_KEY = 'civicsQuizDarkMode.v1';
 const AUTO_NEXT_STORAGE_KEY = 'civicsQuizAutoNext.v1';
+const SITE_VERSION = '2026-06-26-photo-background';
+const SITE_VERSION_STORAGE_KEY = 'civicsQuizSiteVersion.v1';
 const state = { pool: [], index: 0, answers: {}, instant: false, autoNext: false, submitted: false, lastPool: [], mode: 'practice' };
 let autoAdvanceTimer = null;
 
@@ -279,6 +289,18 @@ function shuffle(items) {
 }
 function choiceLabel(answer) { return `${answer}.`; }
 function sectionCount(section) { return questionBank.filter(q => q.section === section).length; }
+function enforceSiteVersion() {
+  try {
+    const currentVersion = localStorage.getItem(SITE_VERSION_STORAGE_KEY);
+    if (currentVersion === SITE_VERSION || !window.location || !window.location.href || !window.location.replace) return;
+    localStorage.setItem(SITE_VERSION_STORAGE_KEY, SITE_VERSION);
+    const url = new URL(window.location.href);
+    url.searchParams.set('v', SITE_VERSION);
+    if (url.href !== window.location.href) window.location.replace(url.href);
+  } catch {
+    localStorage.setItem(SITE_VERSION_STORAGE_KEY, SITE_VERSION);
+  }
+}
 function clearAutoAdvance() {
   window.clearTimeout(autoAdvanceTimer);
   autoAdvanceTimer = null;
@@ -516,6 +538,7 @@ document.addEventListener('keydown', (e)=>{
   if (e.key === 'ArrowRight') nextQuestion();
   if (e.key === 'ArrowLeft') prevQuestion();
 });
+enforceSiteVersion();
 restorePreferences();
 populateSections();
 refreshWrongExamPanel();
