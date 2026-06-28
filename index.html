@@ -1,549 +1,509 @@
-<!doctype html>
+from pathlib import Path
+import json, base64, io
+from PIL import Image, ImageEnhance, ImageFilter
+
+# ---------- Build a few cropped visual aids from the user's uploaded photos ----------
+def data_uri_from_crop(path, box, quality=82, max_width=980):
+    img = Image.open(path).convert("RGB").crop(box)
+    if img.width > max_width:
+        h = int(img.height * max_width / img.width)
+        img = img.resize((max_width, h))
+    img = ImageEnhance.Contrast(img).enhance(1.25)
+    out = io.BytesIO()
+    img.save(out, format="JPEG", quality=quality, optimize=True)
+    return "data:image/jpeg;base64," + base64.b64encode(out.getvalue()).decode("ascii")
+
+west_q4_figure = data_uri_from_crop("/mnt/data/48388_0.jpg", (140, 105, 980, 430))
+west_q9_figure = data_uri_from_crop("/mnt/data/48388_0.jpg", (635, 820, 1040, 1290))
+west_q11_figure = data_uri_from_crop("/mnt/data/48389_0.jpg", (205, 340, 900, 950))
+
+# ---------- Question bank ----------
+Q = []
+def add(unit, prompt, choices, answer, figure=None, note=None):
+    Q.append({
+        "id": len(Q) + 1,
+        "unit": unit,
+        "prompt": prompt,
+        "choices": choices,
+        "answer": answer,
+        "figure": figure,
+        "note": note
+    })
+
+# 西亞（15）
+u = "西亞"
+add(u, "毛毛安排暑假到沙烏地阿拉伯自助旅行。當他上網搜尋當地天氣狀況時，下列何項資訊較正確？<br>（甲）全年乾燥少雨　（乙）夏乾冬雨　（丙）年溫差小　（丁）日溫差大",
+    ["甲丙", "甲丁", "乙丙", "乙丁"], 1)
+add(u, "考古學家及生物學家認為，小麥和大麥最早起源於「肥沃月彎」，進而開啟定居的農業社會。肥沃月彎所指範圍包含下列哪些區域？<br>（甲）巴基斯坦　（乙）安納托利亞高原　（丙）巴勒斯坦　（丁）美索不達米亞平原",
+    ["甲乙", "甲丁", "乙丙", "丙丁"], 3)
+add(u, "伊斯坦堡自古為絲綢之路的途經地，也是歐亞鐵路之間、□□海和○○海的必經之地。文中的□□和○○最可能為下列哪些水域？",
+    ["黑海、裏海", "黑海、地中海", "裏海、地中海", "紅海、地中海"], 1)
+add(u, "下列關於西亞兩個高原地形的比較資料，何者資訊錯誤？請依附圖表判斷。",
+    ["甲", "乙", "丙", "丁"], 3, west_q4_figure)
+add(u, "早在 2012 年，來自臺灣的成功珍奶和日出茶太在杜拜開幕，隨後更多企業向西亞市場積極布局。但考量當地文化差異，下列哪項商品應避免開業，以避免發生問題？",
+    ["臭豆腐", "奶皇包", "豬血糕", "炭燒雞腿飯"], 2)
+add(u, "西亞雖大部分地區為熱帶乾燥氣候，但臨地中海、黑海等地區，冬季有雨，形成溫帶地中海型氣候的原因為何？",
+    ["對流雨旺盛", "冬季主要迎西風", "間熱帶輻合區籠罩", "西南季風從海上帶來水氣"], 1)
+add(u, "伊斯蘭教至今已成為世界上第二大宗教，廣受世人接受。請問伊斯蘭教的傳播與分布，何者有誤？",
+    ["古蘭經翻譯為多國語言課本，普及各地", "透過阿拉伯人四處征戰、經商而遍播", "教義簡明，強調日常生活中的實踐", "倡人人平等，廣為民眾接受"], 0)
+add(u, "土耳其位處兩河流域源頭，對於水資源的掌控深深影響下游國家百姓生計。1980 年代，土耳其的安納托利亞計畫，規劃在兩河流域上游修築水壩和發電廠，此舉引起下游哪兩個國家抗議？",
+    ["敘利亞、伊拉克", "以色列、伊拉克", "巴勒斯坦、以色列", "沙烏地阿拉伯、科威特"], 0)
+add(u, "花花被指派到某城市執行任務，長官將右圖的城市地圖交給花花。請問花花最可能被指派到哪一個城市？",
+    ["麥加", "麥地那", "伊斯坦堡", "耶路撒冷"], 3, west_q9_figure)
+add(u, "以色列自 1948 年建國以來就與巴勒斯坦人勢同水火。下列選項哪些是造成雙方衝突的主因？<br>（甲）宗教　（乙）種族　（丙）水源　（丁）領土　（戊）石油",
+    ["甲乙丙丁", "甲乙丁戊", "甲乙丙戊", "乙丙丁戊"], 0)
+add(u, "2014 年以建立「伊斯蘭教遜尼派大帝國」為號召的伊斯蘭國（IS），利用什葉派和遜尼派的衝突，到處強占國土、占領石油資源，製造種族與宗教屠殺事件。請問伊斯蘭國最主要分布在圖中哪一國範圍？",
+    ["A、H", "E、F", "A、E", "B、C"], 1, west_q11_figure)
+add(u, "西亞產油國近年考慮到石油為不可更新資源，且易受國際油價波動影響，轉而致力於經濟多元化。照片中的建築物為某國積極發展觀光的產物，該國應指何者？",
+    ["卡達", "阿曼", "沙烏地阿拉伯", "阿拉伯聯合大公國"], 3)
+add(u, "泡泡某日參觀臺北清真寺時，發現清真寺內壁上掛了聖城麥加的照片。請問泡泡應朝哪一方位向聖城朝拜？",
+    ["東方", "南方", "西方", "北方"], 2)
+add(u, "熊仔出國旅行時，對某國做了旅行紀錄：國土以高原為主、盛產石油、90% 為阿拉伯人、居民大多為穆斯林且 85% 以上為遜尼派。請問最可能是哪一個國家？",
+    ["伊朗", "土耳其", "伊拉克", "沙烏地阿拉伯"], 3)
+add(u, "X 教授希望學生繳交一份主題為「西亞地區的熱帶乾燥氣候如何影響人民的生活方式」的報告。學生蒐集到：<br>（甲）風塔建築　（乙）一天四季　（丙）禁食豬肉　（丁）盛產石油　（戊）游牧為傳統經濟活動。哪些符合主題？",
+    ["甲乙丙", "甲丙戊", "甲丁戊", "乙丙丁"], 1)
+
+# 澳洲與紐西蘭（15）
+u = "澳洲與紐西蘭"
+add(u, "澳、紐兩國在人文發展上，有許多共同點，不包括以下何者？",
+    ["經濟以資源出口為主", "海港為主要都市型態", "羊毛為重要輸出口", "原住民皆為南島語系"], 3)
+add(u, "澳洲和紐西蘭擁有特有種的比例很高，其共同因素為何？",
+    ["島嶼面積較小", "人為破壞少", "位置孤立的島國", "原住民落實保育工作"], 2)
+add(u, "林先生最近移民紐西蘭奧克蘭，想買一間面向正北方的樓房。為在房子後方的空地找出全年陽光都照不到的地方，以便規劃植栽內容，應選擇在哪一個月份的中午時刻去參觀？",
+    ["三月", "六月", "九月", "十二月"], 1)
+add(u, "影響澳洲人口分布最主要的自然環境因素為何？",
+    ["氣候", "地形", "土壤", "水文"], 0)
+add(u, "觀看電影《魔戒》時，發現其背景有高山、草原、冰河、火山，而這些拍攝背景竟然是在同一個國家！根據上述，該電影最可能是在哪一個國家所拍攝？",
+    ["澳洲", "英國", "紐西蘭", "俄羅斯"], 2)
+add(u, "澳洲的旅行行程強調與其他地方不同，如在雨林環抱中興建木屋旅館，以回收的廢水來灌溉大面積的草地等。請問澳洲所訴求的旅遊特色應為下列何者？",
+    ["雪國風光", "歷史古國", "高山體驗", "生態之旅"], 3)
+add(u, "位於澳洲西部高原的艾爾斯岩（烏魯魯）為何種氣候類型？",
+    ["熱帶沙漠", "熱帶雨林", "溫帶地中海型", "溫帶海洋性"], 0)
+add(u, "一位同學想在暑假期間去海外遊學，希望能利用這機會學習英語、認識當地原住民文化，並體驗獨特的冰河地形和活火山景觀。這個地區羊比人多 20 倍，並且有特有種「奇異鳥」，被稱為「活的地形教室」。下列哪個地區是最佳選擇？",
+    ["夏威夷", "菲律賓", "愛爾蘭", "紐西蘭"], 3)
+add(u, "紐西蘭於 2016 年曾對國旗進行公投，可看出其積極擺脫殖民地的歷史色彩。公投結果多數民眾仍傾向圖右的原國旗。從國旗可知紐西蘭受哪國殖民影響較大？",
+    ["法國", "西班牙", "葡萄牙", "英國"], 3)
+add(u, "澳洲在「限制有色人種進入」階段，進入澳洲的移民以哪一個國家的國民居多？",
+    ["法國", "英國", "西班牙", "葡萄牙"], 1)
+add(u, "澳洲人口主要的集中地區，以何種氣候為主？",
+    ["熱帶沙漠", "溫帶地中海型", "夏雨型暖溫帶", "溫帶海洋性"], 2)
+add(u, "澳、紐皆以農牧業起家，發展過程類似，但至今澳洲已成為農牧工礦俱全的產業結構；紐西蘭仍以農牧為主。造成此差異的主要原因為下列何者？",
+    ["地形", "氣候", "地質", "生物"], 2)
+add(u, "紐西蘭是世界上重要的蔬果出口國家，就其環境特色來說，其產品與美國等國競爭時，所具備的最大優勢為何？",
+    ["土壤肥沃，雨量充沛", "生產期與北半球國家錯開", "人力資源充沛", "牧場規模較大"], 1)
+add(u, "關於澳洲、紐西蘭的自然環境和位置之比較，請問哪項敘述正確？",
+    ["兩者皆是古老結晶陸塊", "兩者皆在南半球", "兩者皆是溫帶海洋性氣候", "兩者皆位在低緯度"], 1)
+add(u, "下表為紐西蘭北島和南島的比較，何者錯誤？<br>（甲）北島緯度較低、南島緯度較高<br>（乙）北島人口較多、南島人口較少<br>（丙）北島以火山地形為主、南島以冰河地形為主<br>（丁）北島為溫帶地中海型氣候、南島為溫帶海洋性氣候",
+    ["甲", "乙", "丙", "丁"], 3)
+
+# 歐洲（15）
+u = "歐洲"
+add(u, "歐盟總部在布魯塞爾，此城市位於哪一個國家？",
+    ["比利時", "法國", "德國", "英國"], 0)
+add(u, "有關「申根公約」的敘述，下列何者正確？",
+    ["歐盟會員國均已加入", "僅歐盟會員國可申請加入", "解除簽約國之間的邊境管制及邊境檢查", "申根國之間僅可以流通歐元"], 2)
+add(u, "世界遺產的分類：（甲）文化遺產；（乙）自然遺產；（丙）複合遺產。請問英國巨石陣和拉普人居住區各分屬哪一個？",
+    ["甲乙", "甲丙", "乙丙", "丙甲"], 1)
+add(u, "小玉到歐洲凡爾賽宮去旅遊，見識到路易十四～十六的皇室住所。請問小玉參觀的國家，應該是下列何者？",
+    ["西班牙", "義大利", "盧森堡", "法國"], 3)
+add(u, "圖為歐元的正反面，其中甲圖樣以該國名人達文西的作品《黃金分割》為硬幣主題。請問該硬幣是何國發行的？",
+    ["波蘭", "希臘", "義大利", "西班牙"], 2)
+add(u, "世界遺產由下列哪個組織所認證審查？",
+    ["APEC", "UNESCO", "WTO", "OPEC"], 1)
+add(u, "下列歐盟特色中，何者有減少企業匯兌損失、增加人民和觀光客消費便利性的功能？",
+    ["取消邊界管制", "發行共同貨幣", "制定共同政策", "同中存異"], 1)
+add(u, "美環到英國去旅行，需要隨身攜帶雨具，以免被淋濕。請問該地為何種氣候？",
+    ["溫帶大陸性", "溫帶海洋性", "溫帶地中海", "熱帶季風"], 1)
+add(u, "下列四幅旗幟中，哪一張是歐盟的會旗？",
+    ["英國國旗", "單一白星旗", "藍底十二顆星旗", "東南亞國協旗"], 2)
+add(u, "下列何者為共享煤、鐵兩項重要戰略物資所成立的區域組織？",
+    ["北大西洋公約組織", "歐洲煤鋼共同體", "華沙公約組織", "歐洲（經濟）共同體"], 1)
+add(u, "韋禮安的〈陽光地中海〉是一首透露出海灘派對歡樂的歌曲。旅行到地中海地區，常會看到藍頂白牆建築，地中海地區建築物多以白色為主，和下列哪個因素關係最密切？",
+    ["日照", "宗教", "降水", "建材"], 0)
+add(u, "照片為歐洲某國的自然海岸風光，峽灣地形明顯。請根據其特徵，判斷該照片最可能在哪一國拍攝？",
+    ["葡萄牙", "義大利", "挪威", "希臘"], 2)
+add(u, "臺灣目前有幾個聯合國認證的世界遺產？",
+    ["0", "3", "6", "9"], 0)
+add(u, "下列哪一個歐洲國家沒有加入歐盟？",
+    ["克羅埃西亞", "挪威", "法國", "西班牙"], 1)
+add(u, "下列哪一個國家不是歐盟會員國，也不是申根區的國家，但使用歐元？",
+    ["科索沃", "瑞典", "德國", "西班牙"], 0)
+
+# 北美洲（15）
+u = "北美洲"
+add(u, "根據地形分布的特色判斷，下列哪一個都會區容易發生地震災害？",
+    ["華盛頓", "洛杉磯", "紐約", "邁阿密"], 1)
+add(u, "下列何者是美國農業區的敘述特徵？",
+    ["位處平原區地狹人稠", "農場規模小", "高度機械化", "集約耕作"], 2)
+add(u, "紐約是美國最大的都市，也是世界商業、金融、媒體及文化中心。有關這個「世界都市」的敘述，下面哪一個敘述不正確？",
+    ["紐約證券交易所影響全世界經濟", "聯合國總部座落於此", "曼哈頓街區是跨國企業總部重要的據點", "最重要的藝術、文化中心，全美影片多於此拍攝"], 3)
+add(u, "表為美國某種商品輸往世界各地的比例：非洲 16%、亞洲 45%、歐洲 2%、北美洲 28%、南美洲 9%。該商品具有大規模高度機械化與商業化經營的特徵，請問該種商品最可能是什麼？",
+    ["煤礦", "汽車", "電腦", "小麥"], 3)
+add(u, "下列何者非世界三大博物館之一？",
+    ["大英博物館", "古根漢美術館", "大都會博物館", "羅浮宮"], 1)
+add(u, "北美洲南側為古老的阿帕拉契山脈，其中有許多東西向交通孔道，請問這些交通孔道是何種地形作用所遺留下來的？",
+    ["火山作用", "溶蝕作用", "河流作用", "冰河作用"], 2)
+add(u, "美國的矽谷高科技工業發展，與下列何項區位要素關係最為密切？",
+    ["設備專業化", "動力充足", "河湖海運的連結", "知識密集、人力充足"], 3)
+add(u, "美國憑藉強大的經貿實力及快速的資訊傳播，其產品和流行文化被推廣到全球，成為大眾文化的代表。下列哪種活動或產物，不是從美國流行至全世界？",
+    ["速食文化", "職業運動比賽", "迪士尼動畫", "下午茶"], 3)
+add(u, "對全球的經濟體系有極大的影響，影響力跨越區域、國家，控制全球經濟的都市，稱為世界都市或全球都市。下列選項中哪一個都市並不符合世界都市的資格？",
+    ["紐約", "倫敦", "東京", "臺北"], 3)
+add(u, "美國哪一區因為開發早，有優越的交通和礦產條件，所以為人口集中特精華區？",
+    ["東北部", "中西部", "西部", "南部"], 0)
+add(u, "2018 年 9 月 30 日，USMCA 協定簽訂，以取代原北美自由貿易協定（NAFTA）。請問下列哪一個國家並不是此組織的會員國？",
+    ["美國", "墨西哥", "加拿大", "巴西"], 3)
+add(u, "美國可說是一個「族群與文化的大拼盤」，目前在美國的移民人口中，哪一個民族因距離較近，所以比例最高？",
+    ["亞裔", "拉丁美裔", "非裔", "紐澳裔"], 1)
+add(u, "北美洲東南部夏季有熱帶氣旋和暖氣團經過，氣候溫暖潮濕，屬於哪一個氣候帶？",
+    ["溫帶海洋性氣候", "副極地氣候", "夏雨型暖溫帶氣候", "高地氣候"], 2)
+add(u, "在川普總統上臺後（2016 年），以「美國優先」、「製造回流」和「保護政策」為訴求，立即退出下列哪個組織？",
+    ["跨太平洋夥伴協定（TPP）", "亞太經濟合作會議（APEC）", "東南亞國協（ASEAN）", "歐盟（EU）"], 0)
+add(u, "在「全球品牌價值 500 強」報告中提到，2025 年的前十名中，有七個品牌創立地點是在美國。請問下列何者不是美國品牌？",
+    ["Apple", "Google", "Facebook", "Samsung"], 3)
+
+# 中南美洲（16）
+u = "中南美洲"
+add(u, "照片中為著名的世界複合遺產「馬丘比丘」，整個遺址矗立在海拔兩千多公尺的山脊上，非常壯觀。請問馬丘比丘為下列哪一個古文明的遺蹟？",
+    ["馬雅文明", "阿茲特克文明", "印加文明", "兩河流域文明"], 2)
+add(u, "中美洲陸地東側為熱帶雨林，西側為熱帶莽原。請問造成此氣候差異的原因為何？",
+    ["迎背風", "洋流", "地形", "季風"], 0)
+add(u, "下列何者不是南美洲的印第安文明——印加文明的成就？",
+    ["縱橫南北的道路與驛站制度", "開闢山坡梯田", "建造湖中人工島、水上農田", "水利灌溉制度"], 2)
+add(u, "下列哪個地方物種繁多，有世界基因庫、地球之肺之稱？",
+    ["亞馬孫平原", "巴西高原", "中美地峽", "安地斯山"], 0)
+add(u, "我國政府官員前往中美洲邦交國訪問，考量中美洲通行的官方語言，應要帶哪種語言翻譯官隨行？",
+    ["英語", "法語", "德語", "西班牙語"], 3)
+add(u, "電視報導：「一位來自外國的舞者，在臺定居 28 年，長期致力於森巴舞教學，並將其故鄉配合森巴舞的嘉年華遊行帶到臺灣。」請問這位舞者的故鄉最可能是下列何地？",
+    ["日本", "印度", "法國", "巴西"], 3)
+add(u, "安地斯山脈位於太平洋板塊及美洲板塊的接觸地帶，西側的安地斯山脈北段屬於熱帶高地氣候，人口主要聚集高山地區的原因為何？",
+    ["火山作用", "降水充足", "氣候涼爽", "景色優美"], 2)
+add(u, "中南美洲受到殖民地式經濟的影響，早期的農礦產品多運送到哪一洲？",
+    ["北美洲", "歐洲", "亞洲", "非洲"], 1)
+add(u, "牙買加的雷鬼和從烏拉圭與阿根廷起源的探戈，都是哪一族群結合黑人節奏音樂和歐洲文化激盪而成？",
+    ["白人", "黃種人", "毛利人", "印第安人"], 0)
+add(u, "殖民時期中的三角貿易，請問非洲運送到美洲的商品是下列何者？",
+    ["熱帶作物", "奴隸", "工業製品", "農業製品"], 1)
+add(u, "中南美洲是臺灣邦交國最多的地區，可是臺灣與中南美洲的貿易總值只占臺灣貿易額度 2%，其原因為何？<br>（甲）殖民地式經濟　（乙）複雜地形　（丙）距離較遠　（丁）多樣氣候",
+    ["甲乙", "甲丙", "乙丙", "乙丁"], 1)
+add(u, "中南美洲有豐富的多元文化，下列何者不是殖民統治的影響？",
+    ["以天主教聖者的名字來作為地名", "棋盤式的街道規劃", "以西班牙或葡萄牙語為官方語言", "發展出玉米文明"], 3)
+add(u, "南美洲形狀為上寬下窄的倒三角形，因此熱帶地區面積廣大，請問南美洲缺乏哪一氣候類型？",
+    ["熱帶雨林", "熱帶莽原", "熱帶高地", "溫帶大陸性"], 3)
+add(u, "中南美洲數量最多的人種為「麥士蒂索人」，主要是由下列哪兩個族群混血而成？",
+    ["黑人和印第安人", "黑人和白人", "印第安人和白人", "日本人和黑人"], 2)
+add(u, "請問巴西高原是位於哪一個氣候區中？",
+    ["熱帶雨林氣候", "熱帶莽原氣候", "夏雨型暖溫帶氣候", "溫帶地中海型氣候"], 1)
+add(u, "中南美洲夏秋之際，大西洋海域常有什麼現象產生，所以加勒比海上的島嶼常為主要的受災區？",
+    ["龍捲風", "寒害", "颶風", "梅雨"], 2)
+
+assert len(Q) == 76, len(Q)
+
+# ---------- HTML ----------
+data_json = json.dumps(Q, ensure_ascii=False).replace("</", "<\\/")
+html = f"""<!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-<meta http-equiv="Pragma" content="no-cache" />
-<meta http-equiv="Expires" content="0" />
-<meta name="theme-color" content="#164e63" id="themeColorMeta" />
-<title>公民與社會刷題網站｜71 題題庫</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>國際探索刷題網站｜76 題</title>
 <style>
-  :root{
-    --ink:#14213d; --muted:#64748b; --line:#d9e3ea; --paper:#ffffff;
-    --bg:#eef6f8; --navy:#164e63; --navy2:#0f766e; --mint:#e8faf5;
-    --amber:#f59e0b; --good:#15803d; --bad:#b91c1c; --bad-bg:#fff0f0;
-    --good-bg:#edfff2; --shadow:0 14px 38px rgba(15, 61, 75, .12);
-  }
-  *{box-sizing:border-box}
-  html{scroll-behavior:smooth}
-  body{
-    margin:0; color:var(--ink); font-family:"Microsoft JhengHei","Noto Sans TC",system-ui,sans-serif;
-    background:
-      linear-gradient(155deg,rgba(243,251,253,.80) 0%,rgba(232,242,246,.74) 44%,rgba(249,252,253,.82) 100%),
-      url("assets/site-background.jpg?v=20260626") center / cover fixed no-repeat;
-    min-height:100vh;
-  }
-  body.dark-mode{
-    --ink:#e6edf3; --muted:#9fb2bd; --line:#29414d; --paper:#132630;
-    --bg:#07151b; --navy:#37b4a6; --navy2:#4fc7b6; --mint:#14342f;
-    --amber:#f8c15b; --good:#62d783; --bad:#ff7b7b; --bad-bg:#3a171a;
-    --good-bg:#10351e; --shadow:0 18px 44px rgba(0,0,0,.34);
-    background:
-      linear-gradient(155deg,rgba(6,16,24,.86) 0%,rgba(16,38,45,.82) 48%,rgba(7,21,27,.88) 100%),
-      url("assets/site-background.jpg?v=20260626") center / cover fixed no-repeat;
-  }
-  button,select,input{font:inherit}
-  .topbar{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.92);backdrop-filter:blur(12px);border-bottom:1px solid #dbe7ec}
-  .topbar-inner{max-width:1160px;margin:auto;padding:13px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px}
-  .brand{display:flex;gap:12px;align-items:center;min-width:0}
-  .brand-mark{width:38px;height:38px;display:grid;place-items:center;border-radius:12px;background:linear-gradient(135deg,var(--navy),var(--navy2));color:white;font-size:20px;font-weight:900;box-shadow:0 6px 12px rgba(15,118,110,.26)}
-  .brand h1{font-size:16px;margin:0;font-weight:800;letter-spacing:.02em}
-  .brand p{margin:2px 0 0;font-size:12px;color:var(--muted)}
-  .stat-pill{font-size:13px;font-weight:800;background:#e7f5f8;color:#075d68;padding:8px 12px;border-radius:999px;white-space:nowrap}
-  main{max-width:1160px;margin:0 auto;padding:32px 24px 56px}
-  .hero{background:linear-gradient(135deg,#154b60,#0f766e);color:#fff;border-radius:28px;padding:34px 36px;box-shadow:var(--shadow);overflow:hidden;position:relative}
-  .hero:after{content:"";position:absolute;width:250px;height:250px;border:38px solid rgba(255,255,255,.08);border-radius:50%;right:-92px;top:-135px}
-  .hero > *{position:relative;z-index:1}
-  .eyebrow{font-size:13px;letter-spacing:.1em;font-weight:800;color:#b9f1e5}
-  .hero h2{font-size:clamp(27px,4vw,43px);line-height:1.15;margin:8px 0 11px}
-  .hero p{margin:0;max-width:760px;line-height:1.75;color:#e5faf7;font-size:15px}
-  .count-grid{display:flex;gap:12px;flex-wrap:wrap;margin-top:22px}
-  .count-card{padding:10px 14px;border-radius:14px;background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.20);min-width:116px}
-  .count-card b{display:block;font-size:22px;line-height:1.1}.count-card span{font-size:12px;color:#d9f8f4}
-  .panel{margin-top:26px;background:var(--paper);border:1px solid #d7e5ea;border-radius:22px;padding:28px;box-shadow:0 8px 24px rgba(22,78,99,.07)}
-  .panel-title{margin:0 0 20px;font-size:21px}.panel-note{margin:-13px 0 20px;font-size:13px;color:var(--muted);line-height:1.65}
-  .setup-grid{display:grid;grid-template-columns:1.25fr 1fr;gap:20px}
-  .setting{padding:17px;border:1px solid var(--line);border-radius:16px;background:#fbfeff}
-  .setting h3{font-size:14px;margin:0 0 12px}.setting p{font-size:12px;margin:0 0 10px;color:var(--muted)}
-  .select, .number{width:100%;border:1px solid #bfcfd8;border-radius:11px;padding:10px 12px;background:#fff;color:var(--ink);outline:none}
-  .select:focus,.number:focus{border-color:var(--navy);box-shadow:0 0 0 3px rgba(22,78,99,.12)}
-  .choice-row{display:flex;gap:8px;flex-wrap:wrap}
-  .choice-chip{position:relative}
-  .choice-chip input{position:absolute;opacity:0;pointer-events:none}
-  .choice-chip label{display:block;cursor:pointer;border:1px solid #c7d6de;border-radius:999px;padding:8px 12px;font-size:13px;font-weight:700;background:#fff}
-  .choice-chip input:checked + label{background:#e2f4f3;border-color:#0f766e;color:#075b58}
-  .switch-row{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-top:13px;padding-top:13px;border-top:1px dashed #d7e1e7}
-  .switch-row span{font-size:13px;font-weight:700}.switch-row small{display:block;font-size:11px;font-weight:400;color:var(--muted);margin-top:3px}
-  .switch{position:relative;width:45px;height:25px;flex:0 0 auto}.switch input{opacity:0;width:0;height:0}.slider{position:absolute;inset:0;border-radius:999px;background:#cbd5e1;cursor:pointer;transition:.2s}.slider:before{content:"";position:absolute;height:19px;width:19px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s;box-shadow:0 1px 3px rgba(0,0,0,.25)}.switch input:checked+.slider{background:#0f766e}.switch input:checked+.slider:before{transform:translateX(20px)}
-  .start-row{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-top:20px;flex-wrap:wrap}.start-hint{font-size:12px;color:var(--muted)}
-  .btn{appearance:none;border:0;border-radius:12px;padding:11px 16px;font-weight:800;cursor:pointer;transition:transform .12s ease,box-shadow .12s ease,background .12s ease}
-  .btn:hover{transform:translateY(-1px)}.btn:active{transform:translateY(0)}.btn-primary{background:linear-gradient(135deg,#0f766e,#155e75);color:#fff;box-shadow:0 8px 16px rgba(15,118,110,.2)}.btn-secondary{background:#edf4f6;color:#17424f}.btn-ghost{background:#fff;border:1px solid #cad9df;color:#17424f}.btn-danger{background:#fff3f3;color:#991b1b;border:1px solid #fecaca}.btn:disabled{opacity:.45;cursor:not-allowed;transform:none}
-  .wrong-retry-box{margin-top:20px;border:1px solid #f5d08a;background:#fffaf0;border-radius:18px;padding:18px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
-  .wrong-retry-box h3{margin:0 0 5px;font-size:16px}.wrong-retry-box p{margin:0;color:#775b22;font-size:13px;line-height:1.6}.wrong-retry-box strong{color:#9a5c00}
-  .hidden{display:none !important}
-  .quiz-shell{margin-top:25px}
-  .quiz-meta{display:flex;justify-content:space-between;gap:16px;align-items:center;margin:0 0 12px;flex-wrap:wrap}.quiz-meta .left{display:flex;gap:9px;align-items:center;flex-wrap:wrap}.tag{background:#e8f4f5;color:#075d68;border-radius:999px;padding:7px 10px;font-size:12px;font-weight:800}.tag.muted{background:#eef2f5;color:#607080}
-  .progress-wrap{height:8px;background:#dce9ed;border-radius:999px;overflow:hidden;margin-bottom:19px}.progress{height:100%;width:0;background:linear-gradient(90deg,#0f766e,#35b6a5);transition:width .25s ease}
-  .question-card{background:#fff;border:1px solid #d7e5ea;border-radius:22px;padding:28px;box-shadow:var(--shadow)}
-  .question-no{font-size:13px;font-weight:800;letter-spacing:.08em;color:#0f766e}
-  .stem{font-size:clamp(18px,2vw,23px);font-weight:800;line-height:1.65;margin:8px 0 22px;white-space:pre-line}
-  .options{display:grid;gap:11px}
-  .option{width:100%;text-align:left;display:flex;gap:13px;align-items:flex-start;border:1.5px solid #cbdce3;background:#fff;border-radius:15px;padding:14px 15px;cursor:pointer;color:var(--ink);line-height:1.55;transition:all .14s ease}
-  .option:hover{border-color:#23889a;background:#f5feff;transform:translateX(2px)}
-  .option:disabled{cursor:default;transform:none}
-  .option-key{width:28px;height:28px;border-radius:50%;background:#eef4f6;color:#234654;display:grid;place-items:center;font-size:13px;font-weight:900;flex:0 0 auto;margin-top:1px}
-  .option.selected{border-color:#0f766e;background:#e9fbf7}.option.selected .option-key{background:#0f766e;color:#fff}
-  .option.correct{border-color:#22a05a;background:var(--good-bg)}.option.correct .option-key{background:#22a05a;color:#fff}
-  .option.incorrect{border-color:#df5252;background:var(--bad-bg)}.option.incorrect .option-key{background:#df5252;color:#fff}
-  .feedback{margin-top:17px;padding:12px 14px;border-radius:12px;font-size:14px;font-weight:700;line-height:1.55}.feedback.good{background:var(--good-bg);color:#11642f;border:1px solid #bde7c9}.feedback.bad{background:var(--bad-bg);color:#a11a1a;border:1px solid #fecaca}
-  .quiz-actions{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:19px;flex-wrap:wrap}.shortcuts{font-size:12px;color:var(--muted)}
-  .action-set{display:flex;gap:8px;flex-wrap:wrap}
-  .results-card{background:#fff;border:1px solid #d7e5ea;border-radius:22px;padding:30px;box-shadow:var(--shadow)}
-  .score-hero{display:flex;justify-content:space-between;gap:20px;align-items:center;flex-wrap:wrap;border-radius:18px;padding:22px;background:linear-gradient(135deg,#eefbfa,#e8f2f8)}
-  .score-num{font-size:52px;line-height:1;font-weight:900;color:#0f766e}.score-num small{font-size:20px;color:#4d6875}.score-text h2{margin:0 0 6px;font-size:25px}.score-text p{margin:0;color:#56707c;line-height:1.65}
-  .review-header{display:flex;justify-content:space-between;align-items:center;margin:27px 0 12px;gap:16px;flex-wrap:wrap}.review-header h3{margin:0;font-size:18px}.review-list{display:grid;gap:10px}
-  .review-item{border:1px solid #d7e2e8;border-radius:14px;padding:13px 15px;background:#fff}.review-item.correct-item{border-left:5px solid #22a05a}.review-item.wrong-item{border-left:5px solid #dc4a4a}.review-top{display:flex;justify-content:space-between;gap:14px;align-items:flex-start}.review-top b{font-size:13px}.review-status{white-space:nowrap;font-size:12px;font-weight:800}.review-status.good{color:#16803c}.review-status.bad{color:#b91c1c}.review-stem{font-size:13px;line-height:1.55;margin-top:6px}.review-answer{font-size:12px;color:#4e6670;margin-top:6px;line-height:1.55}
-  .empty{padding:36px 18px;text-align:center;color:#607080}.empty b{display:block;color:#163f4b;font-size:18px;margin-bottom:6px}
-  .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);opacity:0;pointer-events:none;background:#123f4e;color:#fff;padding:11px 15px;border-radius:12px;font-size:13px;font-weight:700;box-shadow:0 12px 24px rgba(15,61,75,.24);transition:.22s;z-index:40}.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-  footer{max-width:1160px;margin:0 auto;padding:0 24px 30px;color:#70808b;font-size:12px;line-height:1.6}
-  body.dark-mode .topbar{background:rgba(8,24,31,.92);border-bottom-color:#263f49}
-  body.dark-mode .stat-pill{background:#18343d;color:#a8fff1}
-  body.dark-mode .panel,body.dark-mode .question-card,body.dark-mode .results-card,body.dark-mode .review-item{background:var(--paper);border-color:var(--line);box-shadow:var(--shadow)}
-  body.dark-mode .setting{background:#0f2029;border-color:var(--line)}
-  body.dark-mode .select,body.dark-mode .number,body.dark-mode .choice-chip label,body.dark-mode .option,body.dark-mode .btn-ghost{background:#0b1a22;color:var(--ink);border-color:#36515d}
-  body.dark-mode .choice-chip input:checked + label{background:#153d3a;border-color:#4fc7b6;color:#bffff6}
-  body.dark-mode .switch-row{border-top-color:#29414d}
-  body.dark-mode .btn-secondary{background:#18313b;color:#c6f7f0}
-  body.dark-mode .btn-danger{background:#32191b;color:#ffc1c1;border-color:#70363b}
-  body.dark-mode .tag{background:#173841;color:#b8fff4}.dark-mode .tag.muted{background:#172832;color:#a7bdc7}
-  body.dark-mode .progress-wrap{background:#203844}
-  body.dark-mode .option:hover{background:#112831;border-color:#5bc8bb}
-  body.dark-mode .option-key{background:#1a3540;color:#d3edf4}
-  body.dark-mode .option.selected{background:#123c37;border-color:#4fc7b6}
-  body.dark-mode .score-hero{background:linear-gradient(135deg,#102b31,#142833)}
-  body.dark-mode .wrong-retry-box{background:#2a210f;border-color:#6c531c}
-  body.dark-mode .wrong-retry-box p{color:#f2d693}
-  body.dark-mode .wrong-retry-box strong{color:#ffd56d}
-  body.dark-mode footer{color:#94aab5}
-  @media(max-width:760px){main{padding:22px 14px 36px}.topbar-inner{padding:11px 14px}.brand h1{font-size:14px}.brand p{display:none}.stat-pill{font-size:12px;padding:7px 9px}.hero{padding:27px 23px;border-radius:22px}.setup-grid{grid-template-columns:1fr}.panel{padding:20px;border-radius:18px}.question-card,.results-card{padding:20px;border-radius:18px}.stem{font-size:18px}.option{padding:12px}.quiz-actions{align-items:stretch}.action-set{width:100%;justify-content:flex-end}.shortcuts{width:100%}.score-num{font-size:43px}}
+:root {{
+  --ink:#162033; --muted:#607087; --bg:#f4f7fb; --panel:#ffffff;
+  --line:#dfe6f0; --blue:#276ef1; --blue2:#1c56c3; --good:#0f9b62;
+  --bad:#d74242; --warn:#d88a00; --shadow:0 12px 38px rgba(25,44,79,.10);
+}}
+*{{box-sizing:border-box}}
+body{{margin:0;background:linear-gradient(150deg,#eef4ff 0%,#f7f9fc 38%,#edf7f4 100%);color:var(--ink);font-family:"Microsoft JhengHei","Noto Sans TC",system-ui,sans-serif;line-height:1.65}}
+button,select{{font:inherit}}
+header{{background:linear-gradient(125deg,#173566,#2469da 60%,#35a5b9);color:#fff;padding:28px 18px 62px}}
+.header-inner{{max-width:1050px;margin:auto}}
+.brand{{display:flex;gap:14px;align-items:center}}
+.logo{{width:52px;height:52px;border-radius:16px;background:rgba(255,255,255,.16);display:grid;place-items:center;font-size:27px;border:1px solid rgba(255,255,255,.25)}}
+h1{{font-size:clamp(23px,4vw,34px);margin:0;line-height:1.2;letter-spacing:.02em}}
+.subtitle{{margin:7px 0 0;opacity:.92;font-size:15px}}
+.stats{{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}}
+.stat{{background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.22);padding:7px 11px;border-radius:11px;font-size:14px}}
+main{{max-width:1050px;margin:-36px auto 48px;padding:0 16px}}
+.setup,.quiz-card,.summary{{background:rgba(255,255,255,.96);box-shadow:var(--shadow);border:1px solid rgba(218,229,244,.9);border-radius:20px}}
+.setup{{padding:22px;margin-bottom:18px}}
+.setup-grid{{display:grid;grid-template-columns:1.2fr 1fr 1fr auto;gap:12px;align-items:end}}
+.field label{{display:block;font-size:13px;font-weight:700;color:#4a5870;margin-bottom:5px}}
+select{{width:100%;border:1px solid #ccd8e7;border-radius:11px;padding:10px 12px;background:#fff;color:var(--ink);outline:none}}
+.btn{{border:0;border-radius:12px;padding:11px 16px;font-weight:800;cursor:pointer;transition:.18s transform,.18s box-shadow,.18s background;white-space:nowrap}}
+.btn:hover{{transform:translateY(-1px)}}
+.btn:active{{transform:translateY(0)}}
+.primary{{background:var(--blue);color:#fff;box-shadow:0 7px 16px rgba(39,110,241,.22)}}
+.primary:hover{{background:var(--blue2)}}
+.secondary{{background:#edf3ff;color:#2559b0}}
+.ghost{{background:#fff;color:#526177;border:1px solid #d6e0ed}}
+.warn{{background:#fff4dd;color:#955900}}
+.quiz-card{{overflow:hidden}}
+.topbar{{padding:16px 22px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:16px;align-items:center;flex-wrap:wrap}}
+.unit-badge{{display:inline-flex;align-items:center;gap:7px;background:#edf4ff;color:#2859ad;border-radius:999px;padding:5px 10px;font-size:13px;font-weight:800}}
+.progress-text{{font-size:14px;color:#58677d;font-weight:700}}
+.progress-shell{{height:8px;background:#e8edf5;border-radius:999px;overflow:hidden;flex:1;min-width:180px;max-width:320px}}
+.progress-bar{{height:100%;background:linear-gradient(90deg,#3380fb,#40c4b4);width:0%;transition:.25s}}
+.question-wrap{{padding:25px 28px 17px}}
+.q-number{{font-size:13px;font-weight:900;letter-spacing:.07em;color:#2c6fe7;text-transform:uppercase}}
+.q-prompt{{font-size:20px;font-weight:800;line-height:1.75;margin:8px 0 18px}}
+.figure{{max-width:100%;display:block;border-radius:14px;border:1px solid #d7e1ee;margin:10px auto 18px;box-shadow:0 5px 17px rgba(30,60,100,.10)}}
+.options{{display:grid;gap:10px}}
+.choice{{display:flex;align-items:flex-start;gap:11px;border:1.5px solid #d8e1ee;border-radius:14px;padding:13px 15px;cursor:pointer;background:#fff;transition:.15s border,.15s background,.15s transform}}
+.choice:hover{{border-color:#8cadf3;background:#f7faff;transform:translateX(2px)}}
+.choice.selected{{border-color:var(--blue);background:#edf4ff}}
+.choice.correct{{border-color:var(--good);background:#e9f8f1}}
+.choice.wrong{{border-color:var(--bad);background:#fff0f0}}
+.choice input{{accent-color:var(--blue);margin-top:6px;transform:scale(1.14)}}
+.choice-key{{display:inline-grid;place-items:center;background:#e8eef8;color:#3b4f6c;min-width:28px;height:28px;border-radius:9px;font-weight:900}}
+.choice-text{{font-size:16px;flex:1}}
+.feedback{{display:none;margin-top:16px;border-radius:13px;padding:12px 14px;font-weight:800}}
+.feedback.good{{display:block;background:#e7f8ef;color:#137148;border:1px solid #b9e9d0}}
+.feedback.bad{{display:block;background:#fff0f0;color:#ae3131;border:1px solid #f2c3c3}}
+.feedback.neutral{{display:block;background:#fff7e8;color:#8c5b08;border:1px solid #f4dfae}}
+.nav{{display:flex;align-items:center;justify-content:space-between;gap:8px;border-top:1px solid var(--line);padding:16px 22px;flex-wrap:wrap}}
+.nav-left,.nav-right{{display:flex;gap:8px;align-items:center}}
+.nav button:disabled{{opacity:.45;cursor:not-allowed;transform:none}}
+.grid-panel{{padding:16px 22px 21px;border-top:1px solid var(--line);background:#fafcff}}
+.grid-title{{margin:0 0 9px;font-size:13px;color:#5d6d84;font-weight:800}}
+.grid{{display:flex;flex-wrap:wrap;gap:7px}}
+.q-dot{{width:34px;height:34px;border-radius:10px;border:1px solid #d5dfec;background:#fff;color:#54647c;font-weight:800;cursor:pointer}}
+.q-dot.active{{background:#2c6fe7;color:#fff;border-color:#2c6fe7}}
+.q-dot.answered{{border-color:#7ddea9;background:#edfbf4;color:#178350}}
+.q-dot.answered.active{{background:#2c6fe7;color:#fff;border-color:#2c6fe7}}
+.q-dot.wrong-dot{{border-color:#eea1a1;background:#fff4f4;color:#bc3d3d}}
+.summary{{display:none;padding:27px;margin-top:20px}}
+.summary h2{{margin:0 0 8px;font-size:25px}}
+.result-score{{font-size:42px;font-weight:1000;color:#2b6fe8;line-height:1.1;margin:12px 0}}
+.result-detail{{color:#617088;margin-bottom:18px}}
+.mistakes{{margin:15px 0 0;padding:14px;border-radius:14px;background:#fff7f7;border:1px solid #f2d0d0}}
+.mistakes strong{{color:#b53a3a}}
+.small{{font-size:13px;color:#6a788e}}
+@media (max-width:790px){{
+  header{{padding-bottom:52px}}
+  .setup-grid{{grid-template-columns:1fr 1fr}}
+  .setup-grid .wide{{grid-column:span 2}}
+  .question-wrap{{padding:21px 17px 15px}}
+  .q-prompt{{font-size:18px}}
+  .topbar{{padding:14px 17px}}
+  .nav{{padding:14px 17px}}
+  .grid-panel{{padding:14px 17px 18px}}
+}}
+@media (max-width:480px){{
+  .setup-grid{{grid-template-columns:1fr}}
+  .setup-grid .wide{{grid-column:span 1}}
+  .q-prompt{{font-size:17px}}
+  .choice{{padding:12px}}
+  .choice-text{{font-size:15px}}
+}}
 </style>
 </head>
 <body>
-<header class="topbar">
-  <div class="topbar-inner">
+<header>
+  <div class="header-inner">
     <div class="brand">
-      <div class="brand-mark">刷</div>
-      <div><h1>公民與社會刷題網站</h1><p>選擇・勞動市場・接軌臺灣與國際</p></div>
+      <div class="logo">🌍</div>
+      <div><h1>國際探索刷題網站</h1><p class="subtitle">西亞、澳紐、歐洲、北美洲、中南美洲｜依照片整理的選擇題題庫</p></div>
     </div>
-    <div class="stat-pill"><span id="totalBadge">71</span> 題已建檔</div>
+    <div class="stats">
+      <div class="stat">題庫總數：<b id="totalCount">76</b> 題</div>
+      <div class="stat">本次作答：<b id="answeredCount">0</b> 題</div>
+      <div class="stat">目前答對：<b id="correctCount">0</b> 題</div>
+    </div>
   </div>
 </header>
 
 <main>
-  <section id="setupView">
-    <div class="hero">
-      <div class="eyebrow">SOCIAL STUDIES PRACTICE</div>
-      <h2>把題庫變成每一次的有效練習。</h2>
-      <p>可依單元篩選、隨機抽題、即時判題或最後交卷。題庫已排除是非題與手寫筆記，並已內建答案鍵。</p>
-      <div class="count-grid">
-        <div class="count-card"><b id="heroTotal">71</b><span>選擇題總數</span></div>
-        <div class="count-card"><b>7</b><span>來源單元／卷別</span></div>
-        <div class="count-card"><b>4</b><span>每題四選一</span></div>
+  <section class="setup">
+    <div class="setup-grid">
+      <div class="field wide">
+        <label for="unitSelect">練習範圍</label>
+        <select id="unitSelect"></select>
       </div>
+      <div class="field">
+        <label for="orderSelect">出題順序</label>
+        <select id="orderSelect"><option value="sequential">依題號順序</option><option value="random">隨機排列</option></select>
+      </div>
+      <div class="field">
+        <label for="countSelect">練習題數</label>
+        <select id="countSelect"><option value="all">全部題目</option><option value="10">隨機 10 題</option><option value="20">隨機 20 題</option></select>
+      </div>
+      <button class="btn primary" id="startBtn">開始練習</button>
     </div>
-
-    <section class="panel" aria-labelledby="setupTitle">
-      <h2 class="panel-title" id="setupTitle">開始設定</h2>
-      <p class="panel-note">建議第一次先選「全部題庫」，確認弱點後再用「錯題重練」。</p>
-      <div class="setup-grid">
-        <div class="setting">
-          <h3>1. 選擇練習範圍</h3>
-          <p>可選擇全部題庫，或只練某一單元。</p>
-          <select id="sectionSelect" class="select" aria-label="選擇練習範圍"></select>
-        </div>
-        <div class="setting">
-          <h3>2. 選擇本次題數</h3>
-          <p>抽題模式會從指定範圍中隨機取題。</p>
-          <div class="choice-row" id="countChoices">
-            <div class="choice-chip"><input type="radio" id="c10" name="qcount" value="10"><label for="c10">10 題</label></div>
-            <div class="choice-chip"><input type="radio" id="c20" name="qcount" value="20" checked><label for="c20">20 題</label></div>
-            <div class="choice-chip"><input type="radio" id="c40" name="qcount" value="40"><label for="c40">40 題</label></div>
-            <div class="choice-chip"><input type="radio" id="call" name="qcount" value="all"><label for="call">全部</label></div>
-          </div>
-        </div>
-      </div>
-      <div class="setup-grid" style="margin-top:20px">
-        <div class="setting">
-          <h3>3. 題目順序</h3>
-          <div class="switch-row">
-            <div><span>隨機排序</span><small>每次開始時重新洗牌</small></div>
-            <label class="switch"><input id="shuffleToggle" type="checkbox" checked><span class="slider"></span></label>
-          </div>
-        </div>
-        <div class="setting">
-          <h3>4. 作答回饋</h3>
-          <div class="switch-row">
-            <div><span>即時顯示對錯</span><small>關閉後統一在交卷時檢視</small></div>
-            <label class="switch"><input id="instantToggle" type="checkbox"><span class="slider"></span></label>
-          </div>
-        </div>
-      </div>
-      <div class="setup-grid" style="margin-top:20px">
-        <div class="setting">
-          <h3>5. 顯示模式</h3>
-          <div class="switch-row">
-            <div><span>暗色模式</span><small>切換後會記住你的偏好</small></div>
-            <label class="switch"><input id="darkModeToggle" type="checkbox"><span class="slider"></span></label>
-          </div>
-        </div>
-        <div class="setting">
-          <h3>6. 答題節奏</h3>
-          <div class="switch-row">
-            <div><span>答對自動下一題</span><small>答對後短暫顯示回饋再跳題</small></div>
-            <label class="switch"><input id="autoNextToggle" type="checkbox"><span class="slider"></span></label>
-          </div>
-        </div>
-      </div>
-      <div class="wrong-retry-box" aria-labelledby="wrongRetryTitle">
-        <div>
-          <h3 id="wrongRetryTitle">錯題重考</h3>
-          <p id="wrongRetryHint">目前沒有錯題紀錄。交卷後答錯或未答的題目會自動加入。</p>
-        </div>
-        <div class="action-set">
-          <button class="btn btn-secondary" id="startWrongExamBtn" disabled>開始錯題重考</button>
-          <button class="btn btn-ghost" id="clearWrongBtn" disabled>清空錯題</button>
-        </div>
-      </div>
-      <div class="start-row">
-        <div class="start-hint" id="poolHint">目前範圍共有 71 題；選 20 題後將隨機抽題。</div>
-        <button class="btn btn-primary" id="startBtn">開始刷題 →</button>
-      </div>
-    </section>
+    <div class="small" style="margin-top:12px">作答後可按「檢查本題」立即核對答案；交卷後可以只重練錯題。題目中的地圖、表格題已附上必要圖表。</div>
   </section>
 
-  <section id="quizView" class="quiz-shell hidden" aria-live="polite">
-    <div class="quiz-meta">
-      <div class="left">
-        <span id="sectionTag" class="tag"></span>
-        <span id="progressText" class="tag muted"></span>
-        <span id="answerCount" class="tag muted"></span>
-      </div>
-      <button class="btn btn-danger" id="exitBtn">結束本次練習</button>
+  <section class="quiz-card" id="quizCard">
+    <div class="topbar">
+      <div><span class="unit-badge" id="unitBadge">準備開始</span><div class="progress-text" id="progressText">請選擇範圍後開始練習</div></div>
+      <div class="progress-shell"><div class="progress-bar" id="progressBar"></div></div>
     </div>
-    <div class="progress-wrap"><div class="progress" id="progressBar"></div></div>
-    <article class="question-card">
-      <div id="questionNo" class="question-no"></div>
-      <div id="stem" class="stem"></div>
-      <div id="options" class="options"></div>
-      <div id="feedback" class="feedback hidden"></div>
-      <div class="quiz-actions">
-        <div class="shortcuts">快捷鍵：<b>1–4</b> 選答案；<b>← / →</b> 切換題目</div>
-        <div class="action-set">
-          <button class="btn btn-secondary" id="prevBtn">← 上一題</button>
-          <button class="btn btn-ghost" id="nextBtn">下一題 →</button>
-          <button class="btn btn-primary" id="submitBtn">交卷並看結果</button>
-        </div>
-      </div>
-    </article>
+    <div class="question-wrap">
+      <div class="q-number" id="qNumber">QUESTION</div>
+      <div class="q-prompt" id="qPrompt">請按上方「開始練習」。</div>
+      <img class="figure" id="qFigure" alt="題目附圖" style="display:none">
+      <div class="options" id="options"></div>
+      <div class="feedback" id="feedback"></div>
+    </div>
+    <div class="nav">
+      <div class="nav-left"><button class="btn ghost" id="prevBtn">← 上一題</button><button class="btn secondary" id="checkBtn">檢查本題</button></div>
+      <div class="nav-right"><button class="btn ghost" id="resetBtn">重設本回</button><button class="btn primary" id="nextBtn">下一題 →</button><button class="btn warn" id="submitBtn">交卷看成績</button></div>
+    </div>
+    <div class="grid-panel">
+      <p class="grid-title">題號快速跳轉</p>
+      <div class="grid" id="questionGrid"></div>
+    </div>
   </section>
 
-  <section id="resultsView" class="hidden">
-    <article class="results-card">
-      <div class="score-hero">
-        <div>
-          <div class="score-num"><span id="scoreNum">0</span><small> / <span id="scoreTotal">0</span></small></div>
-          <div style="font-size:13px;color:#55707b;margin-top:4px">答對題數</div>
-        </div>
-        <div class="score-text">
-          <h2 id="scoreTitle">練習完成</h2>
-          <p id="scoreDesc"></p>
-        </div>
-      </div>
-      <div class="review-header">
-        <h3>作答檢視</h3>
-        <div class="action-set">
-          <button class="btn btn-secondary" id="retryWrongBtn">只重練錯題</button>
-          <button class="btn btn-primary" id="newPracticeBtn">重新設定練習</button>
-        </div>
-      </div>
-      <div id="reviewList" class="review-list"></div>
-    </article>
+  <section class="summary" id="summary">
+    <h2>本次練習結果</h2>
+    <div class="result-score" id="resultScore">0 / 0</div>
+    <div class="result-detail" id="resultDetail"></div>
+    <div id="mistakeBox"></div>
+    <div style="margin-top:18px;display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn primary" id="retryBtn">只重練錯題</button>
+      <button class="btn secondary" id="newRoundBtn">重新設定題組</button>
+    </div>
   </section>
 </main>
-<footer>本頁為單機 HTML 題庫，可直接用瀏覽器開啟；不需登入、不會上傳作答資料。</footer>
-<div id="toast" class="toast"></div>
 
 <script>
-const questionBank = [{"section":"第九課｜我們的選擇（課本）","num":"2","stem":"課堂上針對「選擇」這個概念，班上同學各自發表了相關看法。請問誰的看法認知「錯誤」？","options":["伯豪：「多數人通常會選擇機會成本最高者，因為最容易獲得最大滿足。」","藝興：「因為資源有限，但卻具有多種用途，所以不斷地選擇成為必然。」","世勛：「不同人做同一選擇的主觀感受不同，因此機會成本也不盡相同。」","鐘太：「世界上的許多資源，包括時間、水、金錢、日照，都是有限的。」"],"answer":"A"},{"section":"第九課｜我們的選擇（課本）","num":"3","stem":"由於傳播媒體的發達和交通工具的便利，認知自己是「地球公民」的趨勢日益明顯，此一現象對於文化發展有何影響？","options":["文化有其特殊性，不受趨勢影響","影響所及將使文化不再有所區別","避免與異文化接觸是維護本國文化的手段","適應文化差異是身為現代公民必要的能力"],"answer":"D"},{"section":"第九課｜我們的選擇（課本）","num":"4","stem":"阿剛高三了，正在苦惱畢業以後要做什麼。他有以下幾個想法，若只考慮一年能獲得的效益，根據「金錢方面的機會成本」，阿剛最可能會做出哪一個選擇？","options":["繼續升學，學費一年 10 萬元，畢業後就業，有望年薪 40 萬元","當房屋仲介，保障年薪 45 萬元，需買機車跑業務，將支出 6 萬元","當加油站工讀生，年薪 30 萬元，但離家較遠，一年交通費要 1 萬元","任職餐廳大夜班，年薪 35 萬元，因為作息不正常，常常精神不濟"],"answer":"B"},{"section":"第九課｜我們的選擇（課本）","num":"5","stem":"美美為了實現開餐廳的夢想，將 100 萬元存款投入餐廳加盟；他放棄繼承年薪 120 萬元的家業、離開年薪 48 萬元的穩定工作，挑戰開餐廳一年。請問關於美美開餐廳的選擇，下列敘述何者「正確」？","options":["機會成本是 100 萬元","隱藏成本是 168 萬元","機會成本是 220 萬元","外顯成本是 168 萬元"],"answer":"C"},{"section":"第九課｜我們的選擇（課本）","num":"6","stem":"一年一度的新北潑水節在中和華新街登場，潑水節源自東南亞地區的新年傳統習俗。新北市擁有全國最多的新住民人口，中和南勢角一帶更是全國緬僑居住最多的地區，華新街也因此逐漸形成當地獨樹一格的南洋美食區及特色商圈。請問該節日的引進，主要為何種原因？","options":["全球化下移工與移民的影響","全球化下傳播與科技的發達","文化接觸下強勢文化的擴張","日治時期殖民國文化的引進"],"answer":"A"},{"section":"第九課｜我們的選擇（課本）","num":"7","stem":"關於誘因，下列敘述何者「正確」？","options":["簡而言之，誘因是藉由改變機會成本來影響人們選擇的手段","生活中，只有廠商和政府能有效利用誘因來影響人們的選擇","人們做選擇所考量的機會成本，並不會受到外在環境的影響","金錢方面的正向誘因或負向誘因，才會有效影響人們的選擇"],"answer":"A"},{"section":"第九課｜我們的選擇（課本）","num":"8","stem":"不肖業者偷偷排放廢水，導致環境破壞、河川受污染。為了解決這種類似問題，政府可以採取的「負向誘因」為何？","options":["嚴格取締違法排放廢水相關業者","補貼相關業者安裝污水處理設備","要求排放廢水者飲用被污染的水","獎勵民眾檢舉非法排放廢水的人"],"answer":"A"},{"section":"第九課｜我們的選擇（課本）","num":"9","stem":"新聞報導：「中國為促進兩岸經濟文化的交流與合作，在 2018 年宣布《31 條惠臺政策》，讓前往中國的臺商，能享有與中國企業相同的待遇，還能獲得稅收優惠或創業補助。」請問此段新聞畫線處，主要在介紹中國對臺商提供的何種誘因？","options":["非金錢負向誘因","非金錢正向誘因","金錢負向誘因","金錢正向誘因"],"answer":"D"},{"section":"第九課｜我們的選擇（課本）","num":"10","stem":"課堂上，老師要求同學各舉一個「非金錢負向誘因」的案例，誰的舉例「錯誤」？","options":["阿寶：「老菸槍被親朋好友取笑牙齒斑黃、膚色蠟黃，決定戒菸。」","曉英：「補習班為了讓學生專心備考，保管成績未進步者的手機。」","阿勳：「某藝人爆出性騷擾醜聞，使消費者拒買其代言的化妝品。」","老皮：「警察為了遏止消費者逗留引發事端，在夜店周邊開罰單。」"],"answer":"D"},{"section":"第十課｜勞動市場、薪資、勞動權益（課本）","num":"1","stem":"小湯的日記寫道：「今年的生日禮物是我一直很想要的藍芽耳機，超級驚喜！因為這個耳機要 5,000 元，我存了好久的零用錢也買不起。媽說這個禮物是弟弟和妹妹打工存錢合送給我的，真是太感謝了！」根據經濟學概念，下列哪個選項的理解「錯誤」？","options":["勞動的價格提高，弟妹打工的意願也增加","從日記可以得知小湯是勞動的需求者","從日記可以得知弟妹是勞動的供給者","弟妹的薪水是他們付出勞動的報酬"],"answer":"B"},{"section":"第十課｜勞動市場、薪資、勞動權益（課本）","num":"2","stem":"2016 年 6 月，華航空服員認為公司宣布更改報到地點，無形中延長他們的工時，經工會投票同意後，發起罷工行動，迫使資方讓步談判。請問下列敘述何者正確？","options":["《勞基法》規範最低工時","《勞基法》規範罷工程序","《勞基法》規範工時符合契約正義","《勞基法》主要為保障雇主"],"answer":"C"},{"section":"第十課｜勞動市場、薪資、勞動權益（課本）","num":"3","stem":"小欣想找一份打工，她去聽了四個不同店家的加班說明，請問誰才符合《勞動基準法》？","options":["甲店：這邊平日加班的時薪都會比照政府規定的基本工資","乙店：平常下班後要自主花半小時收尾，不會提供加班費","丙店：不論週六週日加班，加班費都一樣，不會少給你","丁店：如果你想多賺錢，一個月最多也只能加班 54 小時"],"answer":"D"},{"section":"第十課｜勞動市場、薪資、勞動權益（課本）","num":"4","stem":"某國政府在年初調升 15% 基本工資，該國薪資調高一年後的統計數據顯示零售、批發、餐飲與住宿業受雇員工數皆下降。若該國這一年來的其他環境條件沒有顯著變化，配合勞動的供給與需求等概念，下列推論何者最正確？","options":["基本工資調升可能使失業問題惡化","基本工資調升使產業受雇員工增加","基本工資調升使產業引進自動化生產","基本工資調升促使產業人口外移"],"answer":"A"},{"section":"第十課｜勞動市場、薪資、勞動權益（課本）","num":"5","stem":"「沙烏地阿拉伯勞動人口中有 7 成是外籍人士，政府限制外籍勞工移入、推動企業雇用當地勞工；但多年後失業率仍高居不下，原因之一是部分失業人口可享有豐厚津貼補助，寧願待業也不願從事粗重、低階工作。」從上文線索判斷，沙國有許多外籍勞工的原因最可能為何？","options":["海外專業高階勞工的引進，可幫助沙國產業升級與轉型","因鄰國內戰嚴重，選擇移居到相對穩定的沙國尋求庇護","當地人對特定產業就業意願低落，引進可解決缺工問題","外籍勞工受到沙國豐厚的失業津貼吸引而前往當地生活"],"answer":"C"},{"section":"第十課｜勞動市場、薪資、勞動權益（課本）","num":"6","stem":"甲國以紡織業聞名。統計顯示：2000～2020 年，國內紡織工廠數量由 753 家降至 352 家；對海外地區投資金額由 75 億美元升至 132 億美元。根據兩圖，下列何者正確？","options":["甲國的紡織產業有逐年外移的趨勢","甲國紡織工廠開始引進自動化生產","甲國紡織產業的整體薪資逐年升高","甲國的紡織業經濟產值逐年減少"],"answer":"A"},{"section":"第十課｜勞動市場、薪資、勞動權益（課本）","num":"7","stem":"小茜正在蒐集小論文資料，左圖是她在桃園中壢火車站拍下的越南語、泰語與印尼語招牌照片，右圖是臺灣產業及社福國際移工人口分布圖。請問下列哪個選項最可能是小茜小論文的研究主題？","options":["我國新住民外移他國的主要成因","地方縣市生產自動化的歷史進程","國際移工對國內勞動市場的衝擊","我國產業外移東南亞的國家選擇"],"answer":"C"},{"section":"第十課｜勞動市場、薪資、勞動權益（課本）","num":"8","stem":"企業引進機器人生產，可 24 小時不間斷運作，產量超出以往，可完全取代人力；工廠甚至不需要開燈提供照明，形成「關燈工廠」。請問這樣的變化趨勢，可能對未來的勞動市場帶來哪些影響？","options":["減少勞工工作機會、拉高薪資水準","資方可降低人事成本、增加整體獲利","國際移工在缺工產業的工作機會增加","提高勞工工作意願、拉高薪資水準"],"answer":"B"},{"section":"第十課｜勞動市場、薪資、勞動權益（課本）","num":"9","stem":"多家餐飲業者引進自助點餐機，消費者可在圖像化介面上選餐並以信用卡或行動支付付款，整個消費過程不到一分鐘，不必排隊到櫃檯點餐。上述現象應證了哪種勞動市場趨勢？","options":["國際移工增加","產業大量外移","生產自動化","服務業數位化"],"answer":"D"},{"section":"第十課｜勞動市場、薪資、勞動權益（課本）","num":"10","stem":"記者蒐集到一篇新聞：「未來網購網站將利用無人機取代物流，協助運送客戶訂購的商品。」這則新聞反映的勞動市場變動趨勢，與下列哪個現象最相似？","options":["東歐十國加入歐盟後，西歐的成衣業和木材業紛紛到東歐設廠","法拉利跑車在無塵噴漆車間，藉由機械手臂智能系統完成塗裝","只需要動口，智慧語音助理 Alexa 就可以幫忙放音樂、報天氣","香港重慶大廈的人口組成來自中東、非洲、南亞等 130 個國家"],"answer":"B"},{"section":"第十一課｜接軌臺灣與國際（課本）","num":"1","stem":"甲、乙兩國 1 年可生產的汽車或機車數量如下：甲國汽車 600 萬輛、機車 1,500 萬臺；乙國汽車 900 萬輛、機車 1,800 萬臺。請問下列比較何者正確？","options":["甲國在生產汽車上享有比較利益","乙國在生產機車上享有比較利益","乙國在兩項產品都享有絕對利益","甲國在兩項產品都享有比較利益"],"answer":"C"},{"section":"第十一課｜接軌臺灣與國際（課本）","num":"2","stem":"家長日將來到，老師請佩佩和喬治花 1 小時摺紙布置教室。佩佩 1 小時可以摺 40 架紙飛機或 20 隻紙鶴；喬治 1 小時可以摺 40 架紙飛機或 40 隻紙鶴。下列敘述何者正確？","options":["佩佩在摺紙飛機上具有比較利益","佩佩在摺紙飛機上具有絕對利益","佩佩摺 1 隻紙鶴的機會成本是 0.5 架紙飛機","喬治摺 1 隻紙鶴的機會成本是 0.5 架紙飛機"],"answer":"A"},{"section":"第十一課｜接軌臺灣與國際（課本）","num":"3","stem":"臺灣和中國均從事晶圓和面板代工，依照比較利益，兩國要如何決定從事哪項工作？","options":["生產各自具有絕對利益之產品","生產產量較另一國為高的產品","生產各自機會成本較低的產品","兩者都做，再換取自己具比較利益之產品"],"answer":"C"},{"section":"第十一課｜接軌臺灣與國際（課本）","num":"4","stem":"臺東縣所產的釋迦，克服儲存、運送、包裝和檢疫問題，於 2019 年成功外銷日本。假設只有我國與日本兩個經濟市場，釋迦外銷日本最可能對我國國內釋迦市場造成什麼影響？","options":["農民生產釋迦的成本大幅降低","將會帶動國內釋迦的價格上揚","未來難以在國內市場看到釋迦","日本的生產者獲得更高的利潤"],"answer":"B"},{"section":"第十一課｜接軌臺灣與國際（課本）","num":"5","stem":"《跨太平洋夥伴全面進步協定》（CPTPP）成員國逐年調降對彼此的關稅。資料顯示 CPTPP 生效前後出口到日本的肉品量：澳洲 19,000→27,000 噸、 美國 19,000→22,300 噸、加拿大 2,000→3,000 噸、紐西蘭 1,500→2,000 噸。下列哪位同學的推測最可能成立？","options":["國凱：可預估日本肉品出口量在未來會大幅成長","輝文：CPTPP 生效有利於加拿大國內肉品消費者","保潔：美國的出口成長最小是因為沒加入 CPTPP","啟凱：CPTPP 生效對這些肉品出口國的影響不大"],"answer":"C"},{"section":"第十一課｜接軌臺灣與國際（課本）","num":"6","stem":"2001 年以前，國內紅標米酒每瓶 20 元，與國外進口酒類價差懸殊。2002 年我國加入 WTO 後，其他會員國要求我國廢除米酒公賣制度，並將紅標米酒比照其他進口酒類依蒸餾酒標準課稅，使價格高漲到每瓶 180 元。題幹中的「某原則」最可能是？","options":["最惠國待遇原則","鼓勵發展與經濟改革原則","公平競爭原則","國民待遇原則"],"answer":"D"},{"section":"第十一課｜接軌臺灣與國際（課本）","num":"7","stem":"甲、乙、丙三國加入世界貿易組織後，若甲國給乙國 3% 的優惠稅率，甲國對丙國的優惠稅率該是多少？","options":["1%","3%","5%","7%"],"answer":"B"},{"section":"第十一課｜接軌臺灣與國際（課本）","num":"8","stem":"我國加入世界貿易組織（WTO）後，向會員國承諾對其進口酒類關稅會下降，所有 WTO 會員國出口到臺灣的酒類都可以同等適用，不需再另行談判。這是根據 WTO 的何種原則？","options":["國民待遇原則","最惠國待遇原則","公平競爭原則","鼓勵發展與經濟改革原則"],"answer":"B"},{"section":"第十一課｜接軌臺灣與國際（課本）","num":"9","stem":"關於一中原則的定義和影響，下列敘述何者「錯誤」？","options":["是中華人民共和國在執行國際外交政策和對待兩岸關係的基本原則與主張","一中原則阻礙我國與他國的合作關係，使我們在國際外交陷入弱勢地位","世界上只有一個中國，就是中華民國，不允許中華人民共和國從我國獨立","我國以中華臺北名義參與國際賽事，是不能以國家名義參加國際活動的困境"],"answer":"C"},{"section":"第十一課｜接軌臺灣與國際（課本）","num":"10","stem":"請問下列何者「並非」臺灣在文化發展上所遇到的困境？","options":["臺灣法規嚴厲，許多戲劇劇本需要經過文化部審查","全球化發展，國外影劇進入國內市場取代臺灣影劇","國內市場規模較小，難以吸引外國投資者進行投資","國內影劇業收益較低，導致許多我國人才向外流失"],"answer":"A"},{"section":"勞動市場、薪資、勞動權益｜基礎測驗卷","num":"1","stem":"（甲）便當店老闆付薪水聘請東東負責烹飪，（乙）東東拿著月初領到的薪水，（丙）付錢請髮廊設計師幫他燙頭髮。關於上文，下列理解何者「錯誤」？","options":["甲敘述所指薪水是付出勞動的報酬","乙敘述所指的薪水是勞動的價格","甲敘述中的便當店老闆是勞動的供給者","丙敘述中的髮廊設計師是勞動的供給者"],"answer":"C"},{"section":"勞動市場、薪資、勞動權益｜基礎測驗卷","num":"2","stem":"當社會上的整體薪資水準大幅增長，以下情況何者最「不可能」發生？","options":["廠商的生產成本提高","商品漲價","就業機會減少","廠商大舉增聘員工"],"answer":"D"},{"section":"勞動市場、薪資、勞動權益｜基礎測驗卷","num":"3","stem":"當社會上的整體薪資水準偏低，以下情況何者最「不可能」發生？","options":["雇主願意開出更多工作機會","更多求職者願意爭取工作機會","勞動市場一開始會供過於求","求職者和工作機會的數量差距會越來越小"],"answer":"B"},{"section":"勞動市場、薪資、勞動權益｜基礎測驗卷","num":"4","stem":"不論薪資水準「太高」或「太低」，最終都會因為市場競爭而調整至合理水準，此時工作機會會約等於求職者人數，這種狀態稱為：","options":["供不應求","專業化分工","市場均衡","供過於求"],"answer":"C"},{"section":"勞動市場、薪資、勞動權益｜基礎測驗卷","num":"5","stem":"以下何者「不是」國家制定基本工資的原因？","options":["消弭勞資之間的不平等","對於契約自由之合理限制","打壓資方的社會權力","保障勞工享有一定的生活水準"],"answer":"C"},{"section":"勞動市場、薪資、勞動權益｜基礎測驗卷","num":"6","stem":"關於我國基本工資和加班工資的規定，下列敘述何者正確？","options":["雇主給予員工薪資低於基本工資，政府只能勸導改善","基本工資指勞工在「正常工作時間」內的報酬","平日加班在 2 小時以內，以平日時薪加給 1/2 以上","當月的加班時數在正常情況下，都不可以超過 60 小時"],"answer":"B"},{"section":"勞動市場、薪資、勞動權益｜基礎測驗卷","num":"7","stem":"2018 年南韓基本工資大幅調漲，使得該年國內失業率大增，主要原因為零售業、餐飲業等服務業減少雇員。根據上文，下列理解何者正確？","options":["南韓失業問題有所改善","工資調漲後南韓有意工作者增加","南韓國內產業產值提升","廠商人事成本提高"],"answer":"D"},{"section":"勞動市場、薪資、勞動權益｜基礎測驗卷","num":"8","stem":"桃園後火車站鄰近許多工廠，周遭會掛越南文、泰文、印尼文招牌。請問我們可以如何理解上述景觀？","options":["當地有許多產業外移","當地引進許多國際移工","工業區多採生產自動化","工業區多採服務業數位化"],"answer":"B"},{"section":"勞動市場、薪資、勞動權益｜基礎測驗卷","num":"9","stem":"關於生產自動化，下列敘述何者「錯誤」？","options":["可以提升生產效率","可能增加人事成本","可能會使工作機會減少","可以解決部分產業缺工問題"],"answer":"B"},{"section":"勞動市場、薪資、勞動權益｜基礎測驗卷","num":"10","stem":"無人超商透過人臉辨識及電子感應等技術，民眾可以自助結帳，完全不用店員協助。請問上述展現出何種現象？","options":["服務業數位化","生產自動化","產業外移","國際移工來到"],"answer":"A"},{"section":"勞動市場、薪資、勞動權益｜基礎測驗卷","num":"11","stem":"目前機器手臂已廣泛應用於汽車製造業，專門負責組裝、噴漆、焊接、高溫鑄鍛等危險且繁重的工作。請問上文最能展現生產自動化帶來的何項助益？","options":["解決就業意願低落職位的缺工問題","可全面取代汽車製造業的人力","不受工時與休假限制進行生產","可以大幅提升生產效率"],"answer":"A"},{"section":"勞動市場、薪資、勞動權益｜基礎測驗卷","num":"12","stem":"若市場均衡時的月薪是 2.5 萬元，此時勞動市場有 150 萬個工作機會和 150 萬個有意工作者。若政府規定基本工資調漲至 3 萬元，短期來看，勞動市場會出現何項變化？","options":["工作機會多於 150 萬個","有意工作者多於 150 萬個","失業問題改善","廠商人事成本降低"],"answer":"B"},{"section":"勞動市場、薪資、勞動權益｜基礎測驗卷","num":"13","stem":"哪些「不是」產業外移可能對移出國帶來的壞處？（甲）外移產業的周邊產業連帶萎縮；（乙）減少一國經濟產值；（丙）政府會減少社會福利支出；（丁）增加失業率；（戊）無法促進產業升級。","options":["甲丙","乙丁","丙戊","甲丁"],"answer":"C"},{"section":"勞動市場、薪資、勞動權益｜基礎測驗卷","num":"14","stem":"不滿的員工在工作場所門口集結、設立糾察線，破壞原本的生產秩序。請問上述為何種集體勞動權的行使？","options":["團結權","協商權","訴訟權","爭議權"],"answer":"D"},{"section":"勞動市場、薪資、勞動權益｜基礎測驗卷","num":"15","stem":"以下是工讀生某哥的勞動條件，請問哪一項可能違反法律規定？","options":["工作時間 8 小時","時薪為法定基本工資","試用期不支薪","雇主會幫忙保勞工保險"],"answer":"C"},{"section":"接軌臺灣與國際｜基礎測驗卷","num":"5","stem":"在國際貿易下，下列何者情況最「不可能」發生？","options":["進口國國民要用更高的價格買到外國產品","國內生產者會提升產品品質來與他國競爭","生產者面對便宜進口品競爭而利益受損","出口國的產品價格會較國際貿易前昂貴"],"answer":"A"},{"section":"接軌臺灣與國際｜基礎測驗卷","num":"6","stem":"「＿＿＿」是全球性正式組織，其決議對會員國具有強制力，主要功能在於促進最大的貿易自由化。請問「＿＿＿」應為何？","options":["WTO","WHA","WHO","APEC"],"answer":"A"},{"section":"接軌臺灣與國際｜基礎測驗卷","num":"7","stem":"我國不能以臺灣或中華民國的名義加入 WTO，主要是受制於下列何項原則？","options":["最惠國待遇原則","一個中國原則","國民待遇原則","公平競爭原則"],"answer":"B"},{"section":"接軌臺灣與國際｜基礎測驗卷","num":"8","stem":"WTO 為解決貿易爭端，要求進口到臺灣的外國產汽車，其所受到的規範要與本國產汽車相同。請問這是基於什麼原則？","options":["最惠國待遇原則","國民待遇原則","公平競爭原則","鼓勵發展與經濟改革原則"],"answer":"B"},{"section":"接軌臺灣與國際｜基礎測驗卷","num":"9","stem":"美墨加協定（USMCA）的成立宗旨為降低北美區域內的關稅以及排除貿易障礙，但不會干預簽訂國對外的關稅和貿易政策。請問 USMCA 屬於何種類型的自由貿易協定？","options":["自由貿易區","關稅同盟","共同市場","經濟同盟"],"answer":"A"},{"section":"接軌臺灣與國際｜基礎測驗卷","num":"10","stem":"關於一中原則，下列敘述何者正確？","options":["由中華民國提出的基本原則","有助於我國國際經貿參與","要求中國不得表現出獨立的主張","我國只能以彈性名稱加入國際組織"],"answer":"D"},{"section":"接軌臺灣與國際｜基礎測驗卷","num":"11","stem":"關於臺灣在文化發展上所遇到的困境，下列何者正確？（甲）受法規影響，我國戲劇臺詞需經過文化部審查；（乙）國內影劇業收益較低，導致許多我國人才向外流失；（丙）國內市場規模較小，難以吸引外國投資者進行投資；（丁）創作成果大多為內銷，且消費市場以特定族群為主。","options":["甲乙丙","乙丙丁","甲丙丁","甲乙丁"],"answer":"B"},{"section":"接軌臺灣與國際｜基礎測驗卷","num":"12","stem":"以下哪個文化「並非」臺灣較常見的文化？","options":["南洋文化","日本文化","伊斯蘭文化","美國文化"],"answer":"C"},{"section":"接軌臺灣與國際｜基礎測驗卷","num":"13","stem":"醃製飲食、茶產業、天穿日、義民節等，屬於何種文化的特色？","options":["眷村文化","閩南文化","客家文化","中華文化"],"answer":"C"},{"section":"接軌臺灣與國際｜基礎測驗卷","num":"14","stem":"關於本土語言的保存，下列敘述何者正確？（甲）國民政府遷臺後曾推行國語運動，限制了本土語言的傳承；（乙）政府制定《國家語言發展法》以維繫多元文化傳承；（丙）國家語言包含閩南語、客語、原住民族語、閩東語等；（丁）教育部將臺灣手語列為國小必選項目之一。","options":["甲乙丙","乙丙丁","甲乙丁","甲丙丁"],"answer":"B"},{"section":"接軌臺灣與國際｜基礎測驗卷","num":"15","stem":"（甲）加強文創實力；（乙）政府政策輔導；（丙）完全複製成功者的案例；（丁）加強地方文化意識。以上哪些是發展文化產業必須具有的助力？","options":["甲乙","甲乙丙","甲乙丁","甲乙丙丁"],"answer":"C"},{"section":"第九回｜我們的選擇 基礎測驗卷","num":"1","stem":"資源的分配其實是一種取捨，不論有沒有花錢，我們在選擇的過程勢必會付出某些代價，而這些代價就是：","options":["誘因","機會成本","效益","沉沒成本"],"answer":"B"},{"section":"第九回｜我們的選擇 基礎測驗卷","num":"2","stem":"甲在周末可從事的活動及可獲得的滿足感如下：出國 60、露營 40、追劇 70。若甲選擇出國，則機會成本是：","options":["露營和追劇","追劇","露營","無機會成本"],"answer":"B"},{"section":"第九回｜我們的選擇 基礎測驗卷","num":"3","stem":"「生命誠可貴，愛情價更高，若為自由故，兩者皆可拋。」由前文可知，選擇自由的機會成本是：","options":["愛情","生命","生命、愛情","無機會成本"],"answer":"A"},{"section":"第九回｜我們的選擇 基礎測驗卷","num":"4","stem":"何者「不是」產生選擇的前提？","options":["資源有多種用途","資源只有一種用途","資源有限","欲望無窮"],"answer":"B"},{"section":"第九回｜我們的選擇 基礎測驗卷","num":"5","stem":"吸管插入海龜鼻孔的畫面，使人們正視塑膠污染的嚴重性，進而減少使用塑膠製品。從上述可看出，該畫面對塑膠使用是一種：","options":["金錢的正向誘因","非金錢的正向誘因","非金錢的負向誘因","金錢的負向誘因"],"answer":"C"},{"section":"第九回｜我們的選擇 基礎測驗卷","num":"6","stem":"菸盒放上怵目驚心的警告圖示和標語，是為了提供人民吸菸的：","options":["非金錢負向誘因","非金錢正向誘因","金錢正向誘因","金錢負向誘因"],"answer":"A"},{"section":"第九回｜我們的選擇 基礎測驗卷","num":"7","stem":"豪凱的積蓄可以購買遊艇、飛機或跑車等各種交通工具；郝瓊的積蓄只能搭捷運。請問上述展現出何種概念？","options":["資源只有一種用途是選擇的前提","資源有多種用途是選擇的前提","選擇須考量機會成本","豪凱和郝瓊都面臨資源有限的窘境"],"answer":"B"},{"section":"第九回｜我們的選擇 基礎測驗卷","num":"8","stem":"阿明為了和女友約會，放棄日薪 1,000 元的打工。他陪女友看一輪電影花了 200 元，並一起吃 399 元的吃到飽火鍋。請問阿明選擇和女友約會的機會成本是什麼？","options":["1,000 元","599 元","1,599 元","401 元"],"answer":"C"},{"section":"第九回｜我們的選擇 基礎測驗卷","num":"9","stem":"為了改善空氣污染，政府讓民眾購買電動機車可獲得補助金，使電動機車的購買率大增。由此可知「獲得補助金」對購買電動機車是一種：","options":["金錢的正向誘因","非金錢的正向誘因","非金錢的負向誘因","金錢的負向誘因"],"answer":"A"},{"section":"第九回｜我們的選擇 基礎測驗卷","num":"10","stem":"阿東在生日當天去 KTV 唱歌，因為有壽星優惠，可以用 4 小時的價格唱 8 小時。阿東唱到第 3 個小時就已經唱膩，卻想說難得有優惠而繼續唱滿 8 小時。阿東在做決策時，誤把什麼成本列入考量？","options":["機會成本","外顯成本","隱藏成本","沉沒成本"],"answer":"D"},{"section":"第九回｜我們的選擇 基礎測驗卷","num":"11","stem":"颱風過後，政府將預算用於重建受損道路，使農漁民的災害損失無法獲得補償。關於上述，下列理解何者「錯誤」？","options":["政府的資源有限","投入資源在特定政策會排擠其他政策的資源","政府決策會面臨選擇難題","政府的決策不須考量機會成本"],"answer":"D"},{"section":"第九回｜我們的選擇 基礎測驗卷","num":"12","stem":"甲、乙、丙、丁四人到 A、B、C 三間公司面試，薪水如下：甲 5、4、4 萬；乙 4.5、3.8、4 萬；丙 3、3.8、4 萬；丁 4.3、3.5、4.5 萬。若 4 人只考量薪資，並理性做出最有利選擇，請問誰的機會成本最高？","options":["甲","乙","丙","丁"],"answer":"D"},{"section":"第九回｜我們的選擇 基礎測驗卷","num":"13","stem":"做某個選擇的機會成本包括實際付出的金錢，以及實際付出金錢以外的其他代價；這些代價往往不易以金錢或數字量化，因此常被忽略。請問上文描述何種概念？","options":["沉沒成本","隱藏成本","會計成本","外顯成本"],"answer":"B"},{"section":"第九回｜我們的選擇 基礎測驗卷","num":"14","stem":"研究顯示菸價調漲 25 元，吸菸率可降低 20%，可見菸價調漲可以達到何種效果？","options":["降低吸菸的機會成本","提高吸菸的機會成本","對吸菸產生非金錢的負向誘因","對吸菸產生金錢的正向誘因"],"answer":"B"},{"section":"第九回｜我們的選擇 基礎測驗卷","num":"15","stem":"天氣熱，所以人們選擇不出外用餐；但有了餐飲外送服務，使人用餐的不適感降低，增加想要用餐的欲望。在此例中，「餐飲外送服務」是一種促成改變的：","options":["機會成本","沉沒成本","選擇","誘因"],"answer":"D"},{"section":"機會成本、沉沒成本與誘因｜補充題","num":"1","stem":"老師上課時，舉學生的日常案例：「媽媽給我 500 元自由花用」來講解機會成本。圖中顯示 500 元可購買課金手遊、參考書、帽 T、模型公仔或烤肉吃到飽，每樣物品價格都是 500 元。從此圖可知，下列選項何者屬於機會成本存在的前提？","options":["慾望有限","慾望無窮","資源具有多種用途","資源只有一種用途"],"answer":"C"}];
-const sectionOrder = ["第九課｜我們的選擇（課本）", "第十課｜勞動市場、薪資、勞動權益（課本）", "第十一課｜接軌臺灣與國際（課本）", "勞動市場、薪資、勞動權益｜基礎測驗卷", "接軌臺灣與國際｜基礎測驗卷", "第九回｜我們的選擇 基礎測驗卷", "機會成本、沉沒成本與誘因｜補充題"];
+const BANK = {data_json};
+const letters = ["A","B","C","D"];
+const unitOrder = ["全部題庫","西亞","澳洲與紐西蘭","歐洲","北美洲","中南美洲"];
+let pool = [];
+let current = 0;
+let chosen = {{}};
+let checked = {{}};
+let lastMistakes = [];
 
-const $ = (id) => document.getElementById(id);
-const esc = (value) => String(value).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
-const labels = ['A','B','C','D'];
-const WRONG_STORAGE_KEY = 'civicsQuizWrongKeys.v1';
-const THEME_STORAGE_KEY = 'civicsQuizDarkMode.v1';
-const AUTO_NEXT_STORAGE_KEY = 'civicsQuizAutoNext.v1';
-const SITE_VERSION = '2026-06-26-photo-background';
-const SITE_VERSION_STORAGE_KEY = 'civicsQuizSiteVersion.v1';
-const state = { pool: [], index: 0, answers: {}, instant: false, autoNext: false, submitted: false, lastPool: [], mode: 'practice' };
-let autoAdvanceTimer = null;
-
-function shuffle(items) {
-  const out = items.slice();
-  for (let i = out.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [out[i], out[j]] = [out[j], out[i]];
-  }
-  return out;
-}
-function choiceLabel(answer) { return `${answer}.`; }
-function sectionCount(section) { return questionBank.filter(q => q.section === section).length; }
-function enforceSiteVersion() {
-  try {
-    const currentVersion = localStorage.getItem(SITE_VERSION_STORAGE_KEY);
-    if (currentVersion === SITE_VERSION || !window.location || !window.location.href || !window.location.replace) return;
-    localStorage.setItem(SITE_VERSION_STORAGE_KEY, SITE_VERSION);
-    const url = new URL(window.location.href);
-    url.searchParams.set('v', SITE_VERSION);
-    if (url.href !== window.location.href) window.location.replace(url.href);
-  } catch {
-    localStorage.setItem(SITE_VERSION_STORAGE_KEY, SITE_VERSION);
-  }
-}
-function clearAutoAdvance() {
-  window.clearTimeout(autoAdvanceTimer);
-  autoAdvanceTimer = null;
-}
-function applyDarkMode(enabled) {
-  document.body.classList.toggle('dark-mode', enabled);
-  $('themeColorMeta').setAttribute('content', enabled ? '#07151b' : '#164e63');
-  $('darkModeToggle').checked = enabled;
-  localStorage.setItem(THEME_STORAGE_KEY, enabled ? '1' : '0');
-}
-function restorePreferences() {
-  const darkMode = localStorage.getItem(THEME_STORAGE_KEY) === '1';
-  const autoNext = localStorage.getItem(AUTO_NEXT_STORAGE_KEY) === '1';
-  applyDarkMode(darkMode);
-  $('autoNextToggle').checked = autoNext;
-}
-function questionKey(q) { return `${q.section}::${q.num}::${q.stem}`; }
-function loadWrongKeys() {
-  try {
-    const parsed = JSON.parse(localStorage.getItem(WRONG_STORAGE_KEY) || '[]');
-    return Array.isArray(parsed) ? parsed.filter(Boolean) : [];
-  } catch {
-    return [];
-  }
-}
-function saveWrongKeys(keys) {
-  localStorage.setItem(WRONG_STORAGE_KEY, JSON.stringify([...new Set(keys)]));
-}
-function wrongQuestions() {
-  const keys = new Set(loadWrongKeys());
-  return questionBank.filter(q => keys.has(questionKey(q)));
-}
-function refreshWrongExamPanel() {
-  const wrong = wrongQuestions();
-  $('wrongRetryHint').innerHTML = wrong.length
-    ? `已累積 <strong>${wrong.length}</strong> 題錯題。重考答對後會自動從錯題庫移除。`
-    : '目前沒有錯題紀錄。交卷後答錯或未答的題目會自動加入。';
-  $('startWrongExamBtn').disabled = wrong.length === 0;
-  $('clearWrongBtn').disabled = wrong.length === 0;
-}
-function updateWrongBankAfterSubmit() {
-  const keys = new Set(loadWrongKeys());
-  state.pool.forEach((q, i) => {
-    const key = questionKey(q);
-    if (state.answers[i] === q.answer) keys.delete(key);
-    else keys.add(key);
-  });
-  saveWrongKeys([...keys]);
-  refreshWrongExamPanel();
-}
-
-function populateSections() {
-  const select = $('sectionSelect');
-  select.innerHTML = `<option value="all">全部題庫（${questionBank.length} 題）</option>` +
-    sectionOrder.map(s => `<option value="${esc(s)}">${esc(s)}（${sectionCount(s)} 題）</option>`).join('');
-  updatePoolHint();
-}
-function selectedCount() {
-  return document.querySelector('input[name="qcount"]:checked').value;
-}
-function currentScope() {
-  const selected = $('sectionSelect').value;
-  return selected === 'all' ? questionBank.slice() : questionBank.filter(q => q.section === selected);
-}
-function updatePoolHint() {
-  const scope = currentScope();
-  const count = selectedCount();
-  const requested = count === 'all' ? scope.length : Math.min(Number(count), scope.length);
-  $('poolHint').textContent = `目前範圍共有 ${scope.length} 題；本次將練習 ${requested} 題。`;
-}
-function show(view) {
-  ['setupView','quizView','resultsView'].forEach(id => $(id).classList.toggle('hidden', id !== view));
-  window.scrollTo({top: 0, behavior: 'smooth'});
-}
-function startPractice(providedPool=null, mode='practice') {
-  clearAutoAdvance();
-  let pool = providedPool ? providedPool.slice() : currentScope();
-  if (!pool.length) { toast('沒有可練習的題目。'); return; }
-  const count = selectedCount();
-  if ($('shuffleToggle').checked || providedPool) pool = shuffle(pool);
-  const target = count === 'all' || providedPool ? pool.length : Math.min(Number(count), pool.length);
-  state.pool = pool.slice(0, target);
-  state.lastPool = state.pool.slice();
-  state.index = 0;
-  state.answers = {};
-  state.instant = $('instantToggle').checked;
-  state.autoNext = $('autoNextToggle').checked;
-  state.submitted = false;
-  state.mode = mode;
-  show('quizView');
-  renderQuestion();
-}
-function renderQuestion() {
-  const q = state.pool[state.index];
-  if (!q) return;
-  const currentAnswer = state.answers[state.index];
-  const answered = Object.keys(state.answers).length;
-  $('sectionTag').textContent = q.section;
-  $('progressText').textContent = `第 ${state.index+1} / ${state.pool.length} 題`;
-  $('answerCount').textContent = `已作答 ${answered} 題`;
-  $('progressBar').style.width = `${((state.index + 1) / state.pool.length) * 100}%`;
-  $('questionNo').textContent = `題號 ${q.num}`;
-  $('stem').textContent = q.stem;
-  const answeredCorrectly = currentAnswer === q.answer;
-  const shouldReveal = currentAnswer !== undefined && (state.instant || (state.autoNext && answeredCorrectly));
-  const locked = (state.instant && currentAnswer !== undefined) || (state.autoNext && answeredCorrectly);
-  $('options').innerHTML = q.options.map((opt, i) => {
-    const key = labels[i];
-    let classes = 'option';
-    if (currentAnswer === key) classes += ' selected';
-    if (shouldReveal && key === q.answer) classes += ' correct';
-    if (shouldReveal && currentAnswer === key && key !== q.answer) classes += ' incorrect';
-    return `<button class="${classes}" data-choice="${key}" ${locked ? 'disabled' : ''}>
-      <span class="option-key">${key}</span><span>${esc(opt)}</span></button>`;
-  }).join('');
-  document.querySelectorAll('.option').forEach(btn => btn.addEventListener('click', () => answerQuestion(btn.dataset.choice)));
-  const fb = $('feedback');
-  if (shouldReveal) {
-    const ok = currentAnswer === q.answer;
-    fb.className = `feedback ${ok ? 'good' : 'bad'}`;
-    fb.innerHTML = ok ? '✓ 答對了！' : `✕ 這題的正確答案是 <b>${q.answer}</b>。`;
-  } else {
-    fb.className = 'feedback hidden';
-    fb.textContent = '';
-  }
-  $('prevBtn').disabled = state.index === 0;
-  $('nextBtn').textContent = state.index === state.pool.length - 1 ? '回到第一題' : '下一題 →';
-  $('submitBtn').textContent = answered === state.pool.length ? '交卷並看結果' : `交卷並看結果（尚有 ${state.pool.length-answered} 題未答）`;
-}
-function answerQuestion(choice) {
-  if (state.submitted) return;
-  clearAutoAdvance();
-  const q = state.pool[state.index];
-  const currentAnswer = state.answers[state.index];
-  if ((state.instant && currentAnswer !== undefined) || (state.autoNext && currentAnswer === q.answer)) return;
-  state.answers[state.index] = choice;
-  renderQuestion();
-  if (state.autoNext && choice === q.answer) {
-    const answeredIndex = state.index;
-    if (answeredIndex === state.pool.length - 1) {
-      toast('已答對最後一題，可以交卷看結果。');
-      return;
-    }
-    autoAdvanceTimer = window.setTimeout(() => {
-      if (!state.submitted && state.index === answeredIndex && state.answers[answeredIndex] === q.answer) {
-        nextQuestion();
-      }
-    }, 650);
-  }
-}
-function nextQuestion() {
-  clearAutoAdvance();
-  state.index = state.index === state.pool.length - 1 ? 0 : state.index + 1;
-  renderQuestion();
-}
-function prevQuestion() {
-  clearAutoAdvance();
-  if (state.index > 0) { state.index--; renderQuestion(); }
-}
-function resultTitle(score, total) {
-  const rate = score / total;
-  if (rate === 1) return '完美全對！';
-  if (rate >= .85) return '表現非常穩定！';
-  if (rate >= .7) return '基礎已掌握，繼續加強。';
-  if (rate >= .5) return '有進步空間，建議重練錯題。';
-  return '先從錯題開始建立觀念。';
-}
-function submitPractice() {
-  clearAutoAdvance();
-  state.submitted = true;
-  const correct = state.pool.filter((q, i) => state.answers[i] === q.answer).length;
-  const total = state.pool.length;
-  $('scoreNum').textContent = correct;
-  $('scoreTotal').textContent = total;
-  $('scoreTitle').textContent = resultTitle(correct,total);
-  const unanswered = total - Object.keys(state.answers).length;
-  const pct = Math.round(correct / total * 100);
-  $('scoreDesc').textContent = `本次正確率 ${pct}%。${unanswered ? `另有 ${unanswered} 題未作答，已計為未答。` : '所有題目均已作答。'}`;
-  updateWrongBankAfterSubmit();
-  $('reviewList').innerHTML = state.pool.map((q,i) => {
-    const a = state.answers[i] || '未作答';
-    const correctFlag = a === q.answer;
-    return `<div class="review-item ${correctFlag ? 'correct-item' : 'wrong-item'}">
-      <div class="review-top"><b>${esc(q.section)}｜題號 ${esc(q.num)}</b><span class="review-status ${correctFlag ? 'good' : 'bad'}">${correctFlag ? '✓ 答對' : '✕ 需複習'}</span></div>
-      <div class="review-stem">${esc(q.stem)}</div>
-      <div class="review-answer">你的答案：<b>${esc(a)}</b>　正確答案：<b>${esc(q.answer)}</b>（${esc(q.options[labels.indexOf(q.answer)])}）</div>
-    </div>`;
-  }).join('');
-  const wrong = state.pool.filter((q,i)=>state.answers[i] !== q.answer);
-  $('retryWrongBtn').disabled = wrong.length === 0;
-  $('retryWrongBtn').textContent = wrong.length ? `錯題重考（本次 ${wrong.length} 題）` : '本次沒有錯題';
-  show('resultsView');
-}
-function toast(message) {
-  const el = $('toast'); el.textContent = message; el.classList.add('show');
-  window.clearTimeout(toast.t); toast.t = window.setTimeout(()=>el.classList.remove('show'), 2200);
-}
-
-$('startBtn').addEventListener('click', ()=>startPractice());
-$('darkModeToggle').addEventListener('change', (e)=>applyDarkMode(e.target.checked));
-$('autoNextToggle').addEventListener('change', (e)=>localStorage.setItem(AUTO_NEXT_STORAGE_KEY, e.target.checked ? '1' : '0'));
-$('startWrongExamBtn').addEventListener('click', ()=>{
-  const wrong = wrongQuestions();
-  if (!wrong.length) { toast('目前沒有錯題可重考。'); return; }
-  startPractice(wrong, 'wrong-exam');
-});
-$('clearWrongBtn').addEventListener('click', ()=>{
-  if (!wrongQuestions().length) return;
-  if (confirm('確定要清空目前累積的錯題紀錄？')) {
-    saveWrongKeys([]);
-    refreshWrongExamPanel();
-    toast('已清空錯題紀錄。');
-  }
-});
-$('sectionSelect').addEventListener('change', updatePoolHint);
-document.querySelectorAll('input[name="qcount"]').forEach(el=>el.addEventListener('change',updatePoolHint));
-$('prevBtn').addEventListener('click',prevQuestion);
-$('nextBtn').addEventListener('click',nextQuestion);
-$('submitBtn').addEventListener('click',submitPractice);
-$('exitBtn').addEventListener('click',()=>{ if(confirm('確定要結束這次練習並回到設定頁？未交卷的作答不會保留。')) { clearAutoAdvance(); show('setupView'); } });
-$('newPracticeBtn').addEventListener('click',()=>{ clearAutoAdvance(); show('setupView'); });
-$('retryWrongBtn').addEventListener('click',()=>{
-  const wrong = state.pool.filter((q,i)=>state.answers[i] !== q.answer);
-  if (!wrong.length) return;
-  startPractice(wrong, 'wrong-exam');
-});
-document.addEventListener('keydown', (e)=>{
-  if ($('quizView').classList.contains('hidden')) return;
-  if (/^[1-4]$/.test(e.key)) {
-    const index = Number(e.key)-1;
-    const q = state.pool[state.index];
-    const currentAnswer = state.answers[state.index];
-    if (!((state.instant && currentAnswer !== undefined) || (state.autoNext && currentAnswer === q.answer))) answerQuestion(labels[index]);
-  }
-  if (e.key === 'ArrowRight') nextQuestion();
-  if (e.key === 'ArrowLeft') prevQuestion();
-});
-enforceSiteVersion();
-restorePreferences();
-populateSections();
-refreshWrongExamPanel();
-$('totalBadge').textContent = questionBank.length;
-$('heroTotal').textContent = questionBank.length;
+const $ = id => document.getElementById(id);
+function escapeHTML(v) {{
+  return String(v).replace(/[&<>"']/g, c => ({{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}}[c]));
+}}
+function setSelects() {{
+  const counts = {{}};
+  BANK.forEach(q => counts[q.unit] = (counts[q.unit]||0)+1);
+  $("unitSelect").innerHTML = unitOrder.map(u => {{
+    if (u==="全部題庫") return `<option value="all">全部題庫（${{BANK.length}} 題）</option>`;
+    return `<option value="${{u}}">${{u}}（${{counts[u]}} 題）</option>`;
+  }}).join("");
+}}
+function shuffle(arr) {{
+  const a=[...arr];
+  for(let i=a.length-1;i>0;i--){{const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}}
+  return a;
+}}
+function startRound(customPool=null) {{
+  const unit = $("unitSelect").value;
+  const order = $("orderSelect").value;
+  const count = $("countSelect").value;
+  let list = customPool ? [...customPool] : BANK.filter(q => unit==="all" || q.unit===unit);
+  if(order==="random" || count!=="all") list = shuffle(list);
+  if(count!=="all") list = list.slice(0, Math.min(Number(count), list.length));
+  pool = list; current=0; chosen={{}}; checked={{}}; lastMistakes=[];
+  $("summary").style.display="none";
+  render();
+}}
+function render() {{
+  if(!pool.length) {{
+    $("qPrompt").textContent="目前沒有可練習的題目。";
+    $("options").innerHTML="";
+    return;
+  }}
+  const q = pool[current];
+  $("unitBadge").textContent = q.unit;
+  $("progressText").textContent = `第 ${{current+1}} 題／共 ${{pool.length}} 題`;
+  $("progressBar").style.width = `${{((current+1)/pool.length)*100}}%`;
+  $("qNumber").textContent = `QUESTION ${{String(current+1).padStart(2,"0")}}`;
+  $("qPrompt").innerHTML = q.prompt;
+  const fig = $("qFigure");
+  if(q.figure) {{ fig.src=q.figure; fig.style.display="block"; }} else {{ fig.style.display="none"; fig.removeAttribute("src"); }}
+  const selected = chosen[q.id];
+  const isChecked = checked[q.id];
+  $("options").innerHTML = q.choices.map((choice,i) => {{
+    const selectedClass = selected===i ? " selected" : "";
+    let resultClass="";
+    if(isChecked) {{
+      if(i===q.answer) resultClass=" correct";
+      else if(selected===i) resultClass=" wrong";
+    }}
+    return `<label class="choice${{selectedClass}}${{resultClass}}">
+      <input type="radio" name="choice" value="${{i}}" ${{selected===i ? "checked" : ""}}>
+      <span class="choice-key">${{letters[i]}}</span><span class="choice-text">${{escapeHTML(choice)}}</span>
+    </label>`;
+  }}).join("");
+  document.querySelectorAll('input[name="choice"]').forEach(el => el.addEventListener("change", e => {{
+    chosen[q.id]=Number(e.target.value); delete checked[q.id]; render(); updateStats();
+  }}));
+  const fb=$("feedback");
+  fb.className="feedback";
+  fb.textContent="";
+  if(isChecked) {{
+    if(selected===q.answer) {{ fb.className="feedback good"; fb.textContent=`✓ 答對了！正確答案：${{letters[q.answer]}}．${{q.choices[q.answer]}}`; }}
+    else {{ fb.className="feedback bad"; fb.textContent=`✗ 再想一下。正確答案：${{letters[q.answer]}}．${{q.choices[q.answer]}}`; }}
+  }}
+  $("prevBtn").disabled=current===0;
+  $("nextBtn").disabled=current===pool.length-1;
+  buildGrid();
+  updateStats();
+}}
+function buildGrid() {{
+  $("questionGrid").innerHTML = pool.map((q,i) => {{
+    let c="q-dot";
+    if(i===current) c+=" active";
+    if(chosen[q.id]!==undefined) c+=" answered";
+    if(checked[q.id] && chosen[q.id]!==q.answer) c+=" wrong-dot";
+    return `<button class="${{c}}" data-index="${{i}}" title="第 ${{i+1}} 題">${{i+1}}</button>`;
+  }}).join("");
+  document.querySelectorAll(".q-dot").forEach(b=>b.addEventListener("click",()=>{{current=Number(b.dataset.index);render();window.scrollTo({{top:document.querySelector(".quiz-card").offsetTop-16,behavior:"smooth"}});}}));
+}}
+function updateStats() {{
+  const n = pool.filter(q=>chosen[q.id]!==undefined).length;
+  const c = pool.filter(q=>chosen[q.id]===q.answer).length;
+  $("answeredCount").textContent=n;
+  $("correctCount").textContent=c;
+  $("totalCount").textContent=BANK.length;
+}}
+function checkCurrent() {{
+  if(!pool.length) return;
+  const q=pool[current];
+  if(chosen[q.id]===undefined) {{
+    const fb=$("feedback"); fb.className="feedback neutral"; fb.textContent="請先選擇一個答案。"; return;
+  }}
+  checked[q.id]=true; render();
+}}
+function submitRound() {{
+  if(!pool.length) return;
+  const answered = pool.filter(q=>chosen[q.id]!==undefined).length;
+  const correct = pool.filter(q=>chosen[q.id]===q.answer).length;
+  lastMistakes = pool.filter(q=>chosen[q.id]!==q.answer);
+  $("resultScore").textContent = `${{correct}} / ${{pool.length}}`;
+  $("resultDetail").textContent = `已作答 ${{answered}} 題，答對 ${{correct}} 題，正確率 ${{Math.round(correct/pool.length*100)}}%。`;
+  const box=$("mistakeBox");
+  if(!lastMistakes.length) {{
+    box.innerHTML=`<div class="mistakes"><strong>太棒了！全數答對。</strong><div class="small">可改選其他單元，或改用隨機模式再練一次。</div></div>`;
+  }} else {{
+    box.innerHTML=`<div class="mistakes"><strong>需要複習：${{lastMistakes.length}} 題</strong><div class="small">錯題／未作答題：${{lastMistakes.map(q=>pool.indexOf(q)+1).join("、")}}</div></div>`;
+  }}
+  $("summary").style.display="block";
+  $("summary").scrollIntoView({{behavior:"smooth",block:"start"}});
+}}
+$("startBtn").addEventListener("click",()=>startRound());
+$("prevBtn").addEventListener("click",()=>{{if(current>0){{current--;render();}}}});
+$("nextBtn").addEventListener("click",()=>{{if(current<pool.length-1){{current++;render();}}}});
+$("checkBtn").addEventListener("click",checkCurrent);
+$("submitBtn").addEventListener("click",submitRound);
+$("resetBtn").addEventListener("click",()=>{{ if(confirm("確定要清除本回作答紀錄嗎？")){{chosen={{}};checked={{}};lastMistakes=[];render();}} }});
+$("retryBtn").addEventListener("click",()=>{{if(!lastMistakes.length){{alert("本回沒有錯題可重練。");return;}}$("countSelect").value="all";$("orderSelect").value="random";startRound(lastMistakes);window.scrollTo({{top:document.querySelector(".quiz-card").offsetTop-16,behavior:"smooth"}});}});
+$("newRoundBtn").addEventListener("click",()=>{{window.scrollTo({{top:0,behavior:"smooth"}});}});
+setSelects();
+startRound();
 </script>
 </body>
 </html>
+"""
+
+out_path = Path("/mnt/data/國際探索_刷題網站_76題.html")
+out_path.write_text(html, encoding="utf-8")
+print(f"已建立：{out_path.name}（共 {len(Q)} 題）")
