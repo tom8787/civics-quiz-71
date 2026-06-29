@@ -1,44 +1,402 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="zh-Hant">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>英文第四冊 Unit 4 & Unit 5 刷題網站｜59 題</title>
-<style>
-:root{--bg:#f6f8fc;--ink:#1d2738;--muted:#68758b;--line:#dce4ef;--blue:#2874e8;--blue2:#1e5fc3;--green:#168959;--red:#d94a4a;--shadow:0 15px 40px rgba(26,52,86,.12)}
-*{box-sizing:border-box}body{margin:0;color:var(--ink);background:radial-gradient(circle at 10% 0%,#e7f1ff,transparent 33%),radial-gradient(circle at 95% 5%,#eafbf4,transparent 35%),var(--bg);font-family:"Microsoft JhengHei","Noto Sans TC",Arial,sans-serif;line-height:1.65}
-header{background:linear-gradient(120deg,#173d77,#2874e8 58%,#1aa895);color:#fff;padding:32px 18px 74px}.wrap{max-width:1100px;margin:0 auto}.brand{display:flex;align-items:center;gap:16px}.logo{width:58px;height:58px;border-radius:18px;display:grid;place-items:center;font-size:30px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.28)}h1{margin:0;font-size:clamp(24px,4vw,37px);line-height:1.18}.subtitle{margin:6px 0 0;font-size:15px;opacity:.9}.chips{display:flex;gap:9px;flex-wrap:wrap;margin-top:20px}.chip{padding:7px 11px;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.13);border-radius:999px;font-size:14px}
-main{max-width:1100px;margin:-46px auto 55px;padding:0 16px}.panel{background:rgba(255,255,255,.97);border:1px solid #e0e8f3;border-radius:21px;box-shadow:var(--shadow)}.controls{padding:20px;margin-bottom:18px}.controls-grid{display:grid;grid-template-columns:1.25fr 1fr 1fr auto;gap:12px;align-items:end}.field label{display:block;font-weight:800;font-size:13px;color:#4f5e74;margin-bottom:5px}select{width:100%;padding:11px 12px;border-radius:11px;border:1px solid #cdd9e7;background:white;color:var(--ink);outline:none}button{font:inherit}.btn{border:0;border-radius:12px;padding:11px 15px;cursor:pointer;font-weight:900;transition:transform .15s,box-shadow .15s,background .15s}.btn:hover{transform:translateY(-1px)}.primary{color:#fff;background:var(--blue);box-shadow:0 8px 18px rgba(40,116,232,.25)}.primary:hover{background:var(--blue2)}.secondary{color:#2459ae;background:#eaf2ff}.ghost{background:#fff;color:#53637b;border:1px solid #d7e1ed}.warn{color:#9a5b00;background:#fff3d9}.note{margin:12px 0 0;font-size:13px;color:#66748a}
-.quiz{overflow:hidden}.topbar{padding:16px 22px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:15px;flex-wrap:wrap}.badge{display:inline-flex;padding:5px 10px;border-radius:999px;color:#1e59ae;background:#edf4ff;font-size:13px;font-weight:900}.progress-copy{font-size:14px;color:#66748a;font-weight:800;margin-top:3px}.progress-wrap{width:min(330px,100%);height:9px;border-radius:999px;background:#e9eef6;overflow:hidden}.progress{height:100%;width:0;background:linear-gradient(90deg,#2874e8,#23b39a);transition:.25s}
-.question{padding:26px 30px 18px}.meta{font-size:13px;color:#66758d;font-weight:800}.title{margin:8px 0 15px;font-size:clamp(18px,2.8vw,22px);font-weight:900;line-height:1.72}.passage{background:#f7faff;border:1px solid #d9e5f5;border-left:5px solid #5c91eb;border-radius:13px;padding:15px 16px;margin:0 0 16px;color:#344259;font-size:15px}.options{display:grid;gap:10px}.option{display:flex;gap:11px;align-items:flex-start;padding:13px 14px;border:1.5px solid #d8e1ee;border-radius:14px;background:#fff;cursor:pointer;transition:.15s}.option:hover{transform:translateX(2px);border-color:#8cb0f3;background:#f8fbff}.option.selected{border-color:var(--blue);background:#eef5ff}.option.correct{border-color:var(--green);background:#eaf9f1}.option.wrong{border-color:var(--red);background:#fff0f0}.option input{accent-color:var(--blue);margin-top:6px;transform:scale(1.13)}.letter{width:28px;height:28px;min-width:28px;display:grid;place-items:center;border-radius:9px;background:#e8eef8;color:#3d506f;font-weight:1000}.option-text{font-size:16px}.feedback{display:none;margin-top:15px;border-radius:12px;padding:12px 14px;font-weight:900}.feedback.show{display:block}.feedback.good{background:#e7f8ef;border:1px solid #b9e9d0;color:#146e47}.feedback.bad{background:#fff0f0;border:1px solid #f2c4c4;color:#ab3131}.feedback.info{background:#fff7e6;border:1px solid #f3dfac;color:#8b5b07}
-.nav{padding:16px 22px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap}.nav-group{display:flex;gap:8px;flex-wrap:wrap}.gridbox{padding:16px 22px 20px;border-top:1px solid var(--line);background:#fafcff}.grid-title{margin:0 0 9px;font-size:13px;font-weight:900;color:#5e6c83}.grid{display:flex;flex-wrap:wrap;gap:7px}.dot{width:34px;height:34px;border-radius:10px;border:1px solid #d6e0ec;background:#fff;color:#53647b;font-weight:900;cursor:pointer}.dot.active{background:#2874e8;color:#fff;border-color:#2874e8}.dot.done{border-color:#8dd7ae;background:#effbf4;color:#177f50}.dot.wrong{border-color:#f2aaaa;background:#fff4f4;color:#bc3d3d}.dot.active{color:#fff}
-.summary{display:none;margin-top:20px;padding:26px}.summary h2{margin:0 0 6px;font-size:26px}.score{font-size:43px;font-weight:1000;color:#2874e8;line-height:1.1;margin:12px 0}.mistakes{margin-top:16px;padding:14px 16px;background:#fff7f7;border:1px solid #f3d2d2;border-radius:13px;color:#7b4545}.footer{margin:20px 0 0;font-size:12px;color:#788499;text-align:center}
-@media(max-width:780px){header{padding-bottom:60px}.controls-grid{grid-template-columns:1fr 1fr}.controls-grid .wide{grid-column:span 2}.question{padding:21px 17px 16px}.topbar,.nav,.gridbox{padding-left:17px;padding-right:17px}}@media(max-width:500px){.controls-grid{grid-template-columns:1fr}.controls-grid .wide{grid-column:span 1}.option-text{font-size:15px}.title{font-size:18px}}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>體育認知刷題網站</title>
+  <style>
+    :root{
+      --bg:#f6f4ef;
+      --paper:#fffdf9;
+      --ink:#2d2d2d;
+      --sub:#6b6b6b;
+      --line:#d8d1c5;
+      --accent:#6a7a5d;
+      --accent-soft:#eef3e8;
+      --wrong:#b14a42;
+      --wrong-soft:#faecea;
+      --right:#2f7d4a;
+      --right-soft:#ebf7ef;
+      --chip:#f2eee7;
+    }
+    *{box-sizing:border-box;}
+    body{
+      margin:0;
+      font-family:"Noto Sans TC","Microsoft JhengHei",sans-serif;
+      background:var(--bg);
+      color:var(--ink);
+      line-height:1.75;
+    }
+    .wrap{
+      max-width:980px;
+      margin:0 auto;
+      padding:24px 16px 48px;
+    }
+    .hero{
+      background:var(--paper);
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:22px 22px 16px;
+      box-shadow:0 8px 24px rgba(0,0,0,.04);
+      margin-bottom:18px;
+    }
+    h1{
+      margin:0 0 8px;
+      font-size:30px;
+      letter-spacing:.5px;
+    }
+    .subtitle{
+      margin:0;
+      color:var(--sub);
+      font-size:15px;
+    }
+    .note{
+      margin-top:10px;
+      color:var(--sub);
+      font-size:14px;
+    }
+    .toolbar{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin:18px 0 0;
+    }
+    button{
+      border:1px solid #bdb5a7;
+      background:#fff;
+      color:var(--ink);
+      padding:9px 14px;
+      border-radius:10px;
+      cursor:pointer;
+      font-size:14px;
+    }
+    button:hover{background:#f8f6f1;}
+    .summary{
+      margin-top:16px;
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+      gap:10px;
+    }
+    .stat{
+      background:var(--chip);
+      border:1px solid var(--line);
+      border-radius:12px;
+      padding:12px 14px;
+    }
+    .stat .label{color:var(--sub);font-size:13px;}
+    .stat .value{font-size:24px;font-weight:700;}
+    .section{
+      margin-top:22px;
+      background:var(--paper);
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:18px 18px 8px;
+      box-shadow:0 8px 24px rgba(0,0,0,.04);
+    }
+    .section h2{
+      margin:0 0 12px;
+      font-size:22px;
+      border-left:5px solid var(--accent);
+      padding-left:10px;
+    }
+    .q-card{
+      border-top:1px dashed var(--line);
+      padding:16px 0 14px;
+    }
+    .q-card:first-of-type{border-top:none;padding-top:6px;}
+    .q-head{
+      display:flex;
+      gap:10px;
+      align-items:flex-start;
+      margin-bottom:8px;
+    }
+    .q-no{
+      flex:none;
+      width:42px;
+      height:42px;
+      border-radius:50%;
+      border:1px solid #c8c0b4;
+      background:#fbfaf7;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-weight:700;
+      font-size:15px;
+    }
+    .q-title{
+      flex:1;
+      font-size:16px;
+      margin-top:4px;
+    }
+    .from{
+      color:var(--sub);
+      font-size:13px;
+      margin-top:2px;
+    }
+    .options{
+      display:grid;
+      gap:8px;
+      margin:10px 0 4px 52px;
+    }
+    .option{
+      display:flex;
+      align-items:flex-start;
+      gap:10px;
+      padding:10px 12px;
+      background:#fff;
+      border:1px solid #ddd6c9;
+      border-radius:10px;
+    }
+    .option:hover{background:#fcfbf8;}
+    .option input{margin-top:4px;}
+    .feedback{
+      margin:8px 0 0 52px;
+      padding:10px 12px;
+      border-radius:10px;
+      font-size:14px;
+      display:none;
+    }
+    .feedback.show{display:block;}
+    .feedback.correct{
+      background:var(--right-soft);
+      border:1px solid #b7dec3;
+      color:var(--right);
+    }
+    .feedback.wrong{
+      background:var(--wrong-soft);
+      border:1px solid #e5c0bc;
+      color:var(--wrong);
+    }
+    .pill{
+      display:inline-block;
+      font-size:12px;
+      color:var(--sub);
+      background:var(--chip);
+      border:1px solid var(--line);
+      padding:2px 8px;
+      border-radius:999px;
+      margin-left:6px;
+      vertical-align:middle;
+    }
+    .footer-tip{
+      margin-top:18px;
+      color:var(--sub);
+      font-size:13px;
+      text-align:center;
+    }
+    .hidden{display:none !important;}
+    @media (max-width:700px){
+      h1{font-size:24px;}
+      .section{padding:16px 14px 6px;}
+      .options,.feedback{margin-left:0;}
+      .q-head{display:block;}
+      .q-no{margin-bottom:8px;}
+    }
+  </style>
 </head>
 <body>
-<header><div class="wrap"><div class="brand"><div class="logo">🇬🇧</div><div><h1>英文第四冊 Unit 4 & Unit 5 刷題網站</h1><p class="subtitle">依紅色勾選題目、紅圈／紅框單字整理；圈選單字已轉成選擇題。</p></div></div><div class="chips"><span class="chip">原始勾選題目：35 題</span><span class="chip">圈選字詞選擇題：24 題</span><span class="chip">總題數：59 題</span><span class="chip">可隨機練習・立即對答案・錯題重練</span></div></div></header>
-<main>
-<section class="panel controls"><div class="controls-grid"><div class="field wide"><label for="sectionSelect">練習範圍</label><select id="sectionSelect"></select></div><div class="field"><label for="modeSelect">出題順序</label><select id="modeSelect"><option value="normal">依原本順序</option><option value="random">隨機排列</option></select></div><div class="field"><label for="countSelect">練習題數</label><select id="countSelect"><option value="all">全部題目</option><option value="10">隨機 10 題</option><option value="20">隨機 20 題</option></select></div><button class="btn primary" id="startBtn">開始練習</button></div><p class="note">選擇答案後會立即判斷；答錯時會直接標示錯誤選項，並顯示正確答案。也可最後統一交卷，並針對錯題重練。</p></section>
-<section class="panel quiz" id="quizPanel"><div class="topbar"><div><span class="badge" id="sectionBadge">準備開始</span><div class="progress-copy" id="progressCopy">請先選擇練習範圍。</div></div><div class="progress-wrap"><div class="progress" id="progressBar"></div></div></div><div class="question"><div class="meta" id="sourceText">題目來源</div><div class="title" id="questionText">按上方「開始練習」建立題組。</div><div class="passage" id="passageBox" style="display:none"></div><div class="options" id="optionsBox"></div><div class="feedback" id="feedbackBox"></div></div><div class="nav"><div class="nav-group"><button class="btn ghost" id="prevBtn">← 上一題</button><button class="btn secondary" id="checkBtn">檢查本題</button></div><div class="nav-group"><button class="btn ghost" id="resetBtn">重設本回</button><button class="btn primary" id="nextBtn">下一題 →</button><button class="btn warn" id="submitBtn">交卷看成績</button></div></div><div class="gridbox"><p class="grid-title">題號快速跳轉</p><div class="grid" id="questionGrid"></div></div></section>
-<section class="panel summary" id="summaryPanel"><h2>本次練習結果</h2><div class="score" id="scoreText">0 / 0</div><div id="scoreDetail"></div><div id="mistakeBox"></div><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:18px"><button class="btn primary" id="retryBtn">只重練錯題</button><button class="btn secondary" id="newRoundBtn">重新設定題組</button></div></section>
-<div class="footer">本網站僅整理本次圖片中明確紅勾、紅圈或紅框的題目與字詞；未標記內容未納入。</div>
-</main>
+<div class="wrap">
+  <div class="hero">
+    <h1>體育認知刷題網站</h1>
+    <p class="subtitle">依你上傳的兩頁題目整理成可直接練習的版本，共 40 題。</p>
+    <p class="note">版面刻意做得比較樸素、像一般學校練習網站；答錯時會立即顯示正確答案。若原題是圖片題，這裡保留成文字題目。</p>
+    <div class="toolbar">
+      <button onclick="showAll()">顯示全部題目</button>
+      <button onclick="showWrongOnly()">只看答錯題</button>
+      <button onclick="jumpToUnanswered()">跳到未作答</button>
+      <button onclick="checkAll()">交卷統計</button>
+      <button onclick="resetQuiz()">重新作答</button>
+    </div>
+    <div class="summary">
+      <div class="stat"><div class="label">總題數</div><div class="value" id="totalCount">40</div></div>
+      <div class="stat"><div class="label">已作答</div><div class="value" id="answeredCount">0</div></div>
+      <div class="stat"><div class="label">答對</div><div class="value" id="correctCount">0</div></div>
+      <div class="stat"><div class="label">答錯</div><div class="value" id="wrongCount">0</div></div>
+    </div>
+  </div>
+
+  <div id="sections"></div>
+  <div class="footer-tip">本頁為單一 HTML 檔，直接放到 GitHub Pages 即可使用。</div>
+</div>
+
 <script>
-const BANK = [{"id": 1, "section": "Unit 4｜圈選單字", "kind": "單字選擇", "source": "Unit 4 Vocabulary（紅圈字詞）", "prompt": "單字 <b>satisfied<\/b> 的中文意思最接近下列何者？", "choices": ["感到滿意的", "尷尬的", "殘忍的", "擔心的"], "answer": 0, "passage": null}, {"id": 2, "section": "Unit 4｜圈選單字", "kind": "單字選擇", "source": "Unit 4 Vocabulary（紅圈字詞）", "prompt": "單字 <b>criticize<\/b> 的中文意思最接近下列何者？", "choices": ["批評", "宣布", "連接", "收集"], "answer": 0, "passage": null}, {"id": 3, "section": "Unit 4｜圈選單字", "kind": "單字選擇", "source": "Unit 4 Vocabulary（紅圈字詞）", "prompt": "單字 <b>tragedy<\/b> 的中文意思最接近下列何者？", "choices": ["悲劇", "獎勵", "選擇", "訊號"], "answer": 0, "passage": null}, {"id": 4, "section": "Unit 4｜圈選單字", "kind": "單字選擇", "source": "Unit 4 Vocabulary（紅圈字詞）", "prompt": "單字 <b>embarrassed<\/b> 的中文意思最接近下列何者？", "choices": ["尷尬的", "生氣的", "穩定的", "特別的"], "answer": 0, "passage": null}, {"id": 5, "section": "Unit 4｜圈選單字", "kind": "單字選擇", "source": "Unit 4 Vocabulary（紅圈字詞）", "prompt": "單字 <b>community<\/b> 的中文意思最接近下列何者？", "choices": ["社區；社群", "受害者", "反對者", "方法"], "answer": 0, "passage": null}, {"id": 6, "section": "Unit 4｜圈選單字", "kind": "單字選擇", "source": "Unit 4 Vocabulary（紅圈字詞）", "prompt": "單字 <b>offend<\/b> 的中文意思最接近下列何者？", "choices": ["冒犯；使生氣", "幫助；協助", "保護；照顧", "取消；刪除"], "answer": 0, "passage": null}, {"id": 7, "section": "Unit 4｜圈選單字", "kind": "單字選擇", "source": "Unit 4 Vocabulary（紅圈字詞）", "prompt": "單字 <b>rumor<\/b> 的中文意思最接近下列何者？", "choices": ["謠言", "身分", "現金", "方式"], "answer": 0, "passage": null}, {"id": 8, "section": "Unit 4｜圈選單字", "kind": "單字選擇", "source": "Unit 4 Vocabulary（紅圈字詞）", "prompt": "單字 <b>punish<\/b> 的中文意思最接近下列何者？", "choices": ["處罰", "欣賞", "允許", "宣布"], "answer": 0, "passage": null}, {"id": 9, "section": "Unit 4｜圈選單字", "kind": "單字選擇", "source": "Unit 4 Vocabulary（紅圈字詞）", "prompt": "單字 <b>identity<\/b> 的中文意思最接近下列何者？", "choices": ["身分", "付款", "關係", "目標"], "answer": 0, "passage": null}, {"id": 10, "section": "Unit 4｜圈選單字", "kind": "單字選擇", "source": "Unit 4 Vocabulary（紅圈字詞）", "prompt": "單字 <b>victim<\/b> 的中文意思最接近下列何者？", "choices": ["受害者；犧牲者", "對手", "年長者", "證據"], "answer": 0, "passage": null}, {"id": 11, "section": "Unit 4｜圈選單字", "kind": "單字選擇", "source": "Unit 4 Vocabulary（紅圈字詞）", "prompt": "單字 <b>demonstrate<\/b> 的中文意思最接近下列何者？", "choices": ["展示；顯示", "支付", "懷疑", "逃避"], "answer": 0, "passage": null}, {"id": 12, "section": "Unit 4｜圈選單字", "kind": "單字選擇", "source": "Unit 4 Vocabulary（紅圈字詞）", "prompt": "單字 <b>affect<\/b> 的中文意思最接近下列何者？", "choices": ["影響", "修理", "預訂", "比較"], "answer": 0, "passage": null}, {"id": 13, "section": "Unit 5｜圈選單字", "kind": "單字選擇", "source": "Unit 5 Vocabulary（紅圈／紅框字詞）", "prompt": "單字或片語 <b>bill<\/b> 的中文意思最接近下列何者？", "choices": ["鈔票", "帳號", "折扣", "發票"], "answer": 0, "passage": null}, {"id": 14, "section": "Unit 5｜圈選單字", "kind": "單字選擇", "source": "Unit 5 Vocabulary（紅圈／紅框字詞）", "prompt": "單字或片語 <b>benefit<\/b> 的中文意思最接近下列何者？", "choices": ["好處；益處", "偏見", "負擔", "責任"], "answer": 0, "passage": null}, {"id": 15, "section": "Unit 5｜圈選單字", "kind": "單字選擇", "source": "Unit 5 Vocabulary（紅圈／紅框字詞）", "prompt": "單字或片語 <b>reward<\/b> 的中文意思最接近下列何者？", "choices": ["報酬；獎勵", "懲罰", "謠言", "方法"], "answer": 0, "passage": null}, {"id": 16, "section": "Unit 5｜圈選單字", "kind": "單字選擇", "source": "Unit 5 Vocabulary（紅圈／紅框字詞）", "prompt": "單字或片語 <b>appealing<\/b> 的中文意思最接近下列何者？", "choices": ["吸引人的", "危險的", "沉默的", "昂貴的"], "answer": 0, "passage": null}, {"id": 17, "section": "Unit 5｜圈選單字", "kind": "單字選擇", "source": "Unit 5 Vocabulary（紅圈／紅框字詞）", "prompt": "單字或片語 <b>especially<\/b> 的中文意思最接近下列何者？", "choices": ["尤其；特別地", "立刻", "完全地", "以前"], "answer": 0, "passage": null}, {"id": 18, "section": "Unit 5｜圈選單字", "kind": "單字選擇", "source": "Unit 5 Vocabulary（紅圈／紅框字詞）", "prompt": "單字或片語 <b>elderly<\/b> 的中文意思最接近下列何者？", "choices": ["年長的", "年輕的", "困難的", "聰明的"], "answer": 0, "passage": null}, {"id": 19, "section": "Unit 5｜圈選單字", "kind": "單字選擇", "source": "Unit 5 Vocabulary（紅圈／紅框字詞）", "prompt": "單字或片語 <b>signal<\/b> 的中文意思最接近下列何者？", "choices": ["訊號；信號", "圖案", "付款", "收據"], "answer": 0, "passage": null}, {"id": 20, "section": "Unit 5｜圈選單字", "kind": "單字選擇", "source": "Unit 5 Vocabulary（紅圈／紅框字詞）", "prompt": "單字或片語 <b>connect<\/b> 的中文意思最接近下列何者？", "choices": ["連接；聯結", "刪除", "懷疑", "反對"], "answer": 0, "passage": null}, {"id": 21, "section": "Unit 5｜圈選單字", "kind": "單字選擇", "source": "Unit 5 Vocabulary（紅圈／紅框字詞）", "prompt": "單字或片語 <b>opponent<\/b> 的中文意思最接近下列何者？", "choices": ["反對者", "支持者", "旁觀者", "顧客"], "answer": 0, "passage": null}, {"id": 22, "section": "Unit 5｜圈選單字", "kind": "單字選擇", "source": "Unit 5 Vocabulary（紅圈／紅框字詞）", "prompt": "單字或片語 <b>method<\/b> 的中文意思最接近下列何者？", "choices": ["方式；方法", "價格", "報酬", "受害者"], "answer": 0, "passage": null}, {"id": 23, "section": "Unit 5｜圈選單字", "kind": "單字選擇", "source": "Unit 5 Vocabulary（紅圈／紅框字詞）", "prompt": "單字或片語 <b>burden<\/b> 的中文意思最接近下列何者？", "choices": ["負擔", "獎勵", "名聲", "選擇"], "answer": 0, "passage": null}, {"id": 24, "section": "Unit 5｜圈選單字", "kind": "單字選擇", "source": "Unit 5 Vocabulary（紅圈／紅框字詞）", "prompt": "單字或片語 <b>for short<\/b> 的中文意思最接近下列何者？", "choices": ["簡稱；簡稱為", "很快", "立刻", "當然"], "answer": 0, "passage": null}, {"id": 25, "section": "Unit 4｜勾選題目", "kind": "片語填空", "source": "習作 p.26（紅勾題目）", "prompt": "People are warned to ______ from the old building as it may collapse at any time.", "choices": ["keep away", "turn to", "make fun of", "go in for"], "answer": 0, "passage": null}, {"id": 26, "section": "Unit 4｜勾選題目", "kind": "片語填空", "source": "習作 p.26（紅勾題目）", "prompt": "It was mean of Ted to ______ Sally's new hairstyle in front of all her classmates.", "choices": ["make fun of", "keep away", "turn to", "out of order"], "answer": 0, "passage": null}, {"id": 27, "section": "Unit 4｜勾選題目", "kind": "片語填空", "source": "習作 p.26（紅勾題目）", "prompt": "Jessie ______ a doctor when her headache didn't get better after a full night's sleep.", "choices": ["turned to", "kept away", "made fun of", "went in for"], "answer": 0, "passage": null}, {"id": 28, "section": "Unit 4｜勾選題目", "kind": "文法選擇", "source": "習作 p.26（紅勾題目）", "prompt": "______ selling all the cookies he makes, the baker always shares some with the poor in the neighborhood.", "choices": ["Instead of", "Instead", "Because of", "In spite of"], "answer": 0, "passage": null}, {"id": 29, "section": "Unit 4｜勾選題目", "kind": "文法選擇", "source": "習作 p.26（紅勾題目）", "prompt": "Sylvia's father was tough on her, ______ her to set a good example for her younger brother.", "choices": ["asked", "asking", "ask", "asks"], "answer": 1, "passage": null}, {"id": 30, "section": "Unit 4｜勾選題目", "kind": "文法選擇", "source": "習作 p.26（紅勾題目）", "prompt": "In summer, John ______ goes out without wearing a hat because the sun is too strong.", "choices": ["no", "not", "can't", "never"], "answer": 3, "passage": null}, {"id": 31, "section": "Unit 4｜勾選題目", "kind": "文法選擇", "source": "習作 p.26（紅勾題目）", "prompt": "Sandy rejected Henry's invitation to his party ______ saying that she had a lot of homework to do that night.", "choices": ["to", "by", "on", "for"], "answer": 1, "passage": null}, {"id": 32, "section": "Unit 4｜勾選題目", "kind": "文法選擇", "source": "習作 p.26（紅勾題目）", "prompt": "The phone ______ a cracked screen still works fine, so I don't want to buy a new one.", "choices": ["has", "which having", "having", "have had"], "answer": 2, "passage": null}, {"id": 33, "section": "Unit 4｜勾選題目", "kind": "對話選擇", "source": "習作 p.28（紅勾題目）", "prompt": "Joan: ______<br>Carol: Sure. How can I help?<br>Joan: I need to turn off the air conditioner, but I can't find the remote control.<br>Carol: Ah, here it is. It was under the sofa.<br>Joan: Thanks!", "choices": ["Let me give you a hand.", "Do you need my help?", "I am scared to go out.", "May I ask you a favor?"], "answer": 3, "passage": null}, {"id": 34, "section": "Unit 4｜勾選題目", "kind": "對話選擇", "source": "習作 p.28（紅勾題目）", "prompt": "Brenda: Excuse me. Would you mind helping me close the door?<br>Vivian: Of course not. ______ It's really cold outside.<br>Brenda: Thank you so much.", "choices": ["I'll close the window.", "It sounds like a bad idea.", "Let me help you with that.", "It's your turn to close it."], "answer": 2, "passage": null}, {"id": 35, "section": "Unit 4｜勾選題目", "kind": "對話選擇", "source": "習作 p.29（紅勾題目）", "prompt": "Shirley: There are strangers making nasty remarks on my Instagram post.<br>Becky: Oh no! What are you going to do?<br>Shirley: I want to make my account private so that only my friends can see my posts, but I don't know how to do it.<br>Becky: ______<br>Shirley: Thanks. You're truly my best friend.", "choices": ["It's not my fault.", "Let me give you a hand.", "I don't know how to do it, either.", "My bad! I apologize to you."], "answer": 1, "passage": null}, {"id": 36, "section": "Unit 4｜勾選題目", "kind": "對話選擇", "source": "習作 p.29（紅勾題目）", "prompt": "Ben: Justin... I really need your help.<br>Justin: Hey, don't cry. Tell me what happened.<br>Ben: Sammy made fun of my new hairstyle and said it looks silly.<br>Justin: ______ You look great.<br>Ben: Okay. I'll just ignore her.", "choices": ["Don't take it to heart.", "That sounds nice!", "She is an honest person.", "You're telling me!"], "answer": 0, "passage": null}, {"id": 37, "section": "Unit 4｜勾選題目", "kind": "對話選擇", "source": "習作 p.29（紅勾題目）", "prompt": "Mike: Do you have a minute? If so, ______ I've never done this before.<br>Sandy: Sure! I'd be happy to help. Just give the receptionist your personal information, the arrival date, room type, and your credit card number.<br>Mike: Okay. I'll give it a try. I think I can do it. Thank you.", "choices": ["I could use your help setting up my new phone.", "I really could use some help with the hotel reservation.", "I could use your help confirming the reservation e-mail.", "I really need your advice on picking the right arrival date."], "answer": 1, "passage": null}, {"id": 38, "section": "Unit 4｜勾選題目", "kind": "閱讀理解", "source": "習作 p.30（紅勾題目）", "prompt": "Which of the following is the best title for this passage?", "choices": ["The Definition of Cyberbullying", "Solutions to Cyberbullying", "Effective Ways of Cyberbullying", "A New Method of Cyberbullying"], "answer": 1, "passage": "Unfortunately, many teenagers experience cyberbullying. Bullies often try to amuse others with hurtful comments about someone's posts or pictures. However, these “jokes” are meant to hurt a person and make everyone laugh at him or her. To protect themselves, teenagers can take a number of actions, including the following.<br><br>\nFirst, they can peacefully reply to the bullies' comments and clearly state that their behavior is hurtful. If the bullies continue, then the victims can choose to block them. Also, most social networking sites allow users to choose a list of “close friends,” who are the only ones that can view their posts and make comments. This feature can help protect users from unwanted attention and limit interactions with bullies. In addition, if teenagers are upset, they can seek emotional support from someone they trust. Finally, bullies can be reported to the police, who can take legal action against them.<br><br>\nIt is not easy to deal with cyberbullying, yet teenagers should realize that effective action is possible and that they can make a difference by being fearless."}, {"id": 39, "section": "Unit 4｜勾選題目", "kind": "閱讀理解", "source": "習作 p.30（紅勾題目）", "prompt": "Which of the following is NOT mentioned as a protection from cyberbullying?", "choices": ["Blocking bullies.", "Calling bullies out and fighting back.", "Seeking emotional support from someone you trust.", "Replying to bullies' messages to tell them not to do it again."], "answer": 1, "passage": "Unfortunately, many teenagers experience cyberbullying. Bullies often try to amuse others with hurtful comments about someone's posts or pictures. However, these “jokes” are meant to hurt a person and make everyone laugh at him or her. To protect themselves, teenagers can take a number of actions, including the following.<br><br>\nFirst, they can peacefully reply to the bullies' comments and clearly state that their behavior is hurtful. If the bullies continue, then the victims can choose to block them. Also, most social networking sites allow users to choose a list of “close friends,” who are the only ones that can view their posts and make comments. This feature can help protect users from unwanted attention and limit interactions with bullies. In addition, if teenagers are upset, they can seek emotional support from someone they trust. Finally, bullies can be reported to the police, who can take legal action against them.<br><br>\nIt is not easy to deal with cyberbullying, yet teenagers should realize that effective action is possible and that they can make a difference by being fearless."}, {"id": 40, "section": "Unit 4｜勾選題目", "kind": "閱讀理解", "source": "習作 p.30（紅勾題目）", "prompt": "Which of the following can be inferred from the passage?", "choices": ["There is nothing we can do about cyberbullying.", "We should hide ourselves when being bullied.", "We had better quit using every social networking site.", "It's not easy to fight against cyberbullying, but we can still take action."], "answer": 3, "passage": "Unfortunately, many teenagers experience cyberbullying. Bullies often try to amuse others with hurtful comments about someone's posts or pictures. However, these “jokes” are meant to hurt a person and make everyone laugh at him or her. To protect themselves, teenagers can take a number of actions, including the following.<br><br>\nFirst, they can peacefully reply to the bullies' comments and clearly state that their behavior is hurtful. If the bullies continue, then the victims can choose to block them. Also, most social networking sites allow users to choose a list of “close friends,” who are the only ones that can view their posts and make comments. This feature can help protect users from unwanted attention and limit interactions with bullies. In addition, if teenagers are upset, they can seek emotional support from someone they trust. Finally, bullies can be reported to the police, who can take legal action against them.<br><br>\nIt is not easy to deal with cyberbullying, yet teenagers should realize that effective action is possible and that they can make a difference by being fearless."}, {"id": 41, "section": "Unit 4｜勾選題目", "kind": "閱讀理解", "source": "閱讀素養練習 p.31（紅勾題目）", "prompt": "Which of the following can be inferred from the passage?", "choices": ["When being bullied, the victim should avoid talking about it.", "Delete any threatening messages and pictures because they are horrible.", "It would be better to find out who the bully is and talk to him or her one on one.", "Reporting bullies to the owners of the website is an effective way of dealing with cyberbullying."], "answer": 3, "passage": "With more and more people getting hurt, cyberbullying has become a serious problem. Everyone should do everything possible to fight against it, and we can start by caring about people around us. There are signs when people may be experiencing cyberbullying.<br><br>\nFor example, they may be nervous when receiving messages or upset after using the Internet. Failing to fall asleep, loss of appetite, or avoiding social gatherings can all be signs of being bullied. If you notice any changes in the mood or behavior of someone close to you, encourage them to talk about it.<br><br>\nHere are some ways to protect your friends from bullies. Tell them to simply ignore the messages and block the bully. If possible, collect the threatening messages and pictures as evidence. Report the bully to the website owners and take legal action.<br><br>\nAs for your friends, tell them that it's not their fault, and give them your support. Encourage them to talk to someone they trust and reach out to anyone who can be of assistance. Everyone might be bullied at some point, in some way. The most important thing to do is deal with it correctly and effectively."}, {"id": 42, "section": "Unit 4｜勾選題目", "kind": "片語填空", "source": "Unit 4 練習 p.34（紅勾題目）", "prompt": "Alice has really ______ video games recently. She often hangs out at Internet cafés after school.", "choices": ["gone in for", "so far", "out of order", "turned to"], "answer": 0, "passage": null}, {"id": 43, "section": "Unit 4｜勾選題目", "kind": "片語填空", "source": "Unit 4 練習 p.34（紅勾題目）", "prompt": "Mavis has earned NT$500 ______, but she still needs more to buy a concert ticket.", "choices": ["gone in for", "so far", "out of order", "keep away"], "answer": 1, "passage": null}, {"id": 44, "section": "Unit 4｜勾選題目", "kind": "片語填空", "source": "Unit 4 練習 p.34（紅勾題目）", "prompt": "The old machine in the factory is ______ and needs to be repaired immediately.", "choices": ["gone in for", "so far", "out of order", "make fun of"], "answer": 2, "passage": null}, {"id": 45, "section": "Unit 4｜勾選題目", "kind": "文法選擇", "source": "Unit 4 練習 p.34（紅勾題目）", "prompt": "Any cosmetics ______ with LINE Pay earned me extra LINE Points.", "choices": ["buy", "buying", "bought", "that bought"], "answer": 2, "passage": null}, {"id": 46, "section": "Unit 4｜勾選題目", "kind": "文法選擇", "source": "Unit 4 練習 p.34（紅勾題目）", "prompt": "My mother ______ dinner for three hours, but it's still not ready even now.", "choices": ["cook", "will cook", "had cooked", "has been cooking"], "answer": 3, "passage": null}, {"id": 47, "section": "Unit 4｜勾選題目", "kind": "文法選擇", "source": "Unit 4 練習 p.34（紅勾題目）", "prompt": "It is the movie star ______ is reported to be having an affair with a married man.", "choices": ["who", "whom", "which", "whose"], "answer": 0, "passage": null}, {"id": 48, "section": "Unit 4｜勾選題目", "kind": "文法選擇", "source": "Unit 4 練習 p.34（紅勾題目）", "prompt": "Nowadays, youngsters ______ for solutions online whenever they have problems.", "choices": ["used to look", "are used to looking", "are used to look", "be used to looking"], "answer": 1, "passage": null}, {"id": 49, "section": "Unit 4｜勾選題目", "kind": "文法選擇", "source": "Unit 4 練習 p.34（紅勾題目）", "prompt": "It's raining heavily. I ______ not walk to school today because my shoes will get soaked.", "choices": ["prefer", "prefer that", "would like", "would rather"], "answer": 3, "passage": null}, {"id": 50, "section": "Unit 5｜勾選題目", "kind": "對話選擇", "source": "Unit 5 練習 p.36（紅勾題目）", "prompt": "Victor: Can I pay with my smartphone?<br>Clerk: Sure. ______<br>Victor: That's great! How do I do it?<br>Clerk: Please open the app and show me the QR code on your phone.", "choices": ["In cash or by credit cards?", "I need to know your identity.", "Can you show your mobile app?", "We now accept mobile payments."], "answer": 3, "passage": null}, {"id": 51, "section": "Unit 5｜勾選題目", "kind": "對話選擇", "source": "Unit 5 練習 p.36–37（紅勾題目）", "prompt": "Stacy: ______<br>Clerk: Sure, it's $120 in total. Please hold the barcode in front of the scanner.<br>Stacy: Well, it seems that my barcode is not scanning properly.<br>Clerk: Could you move it a bit closer, please?", "choices": ["I would like to pay with LINE Pay.", "I would like to see the menu, please.", "Can you give me a coupon before I pay?", "How many reward points do I have in my account?"], "answer": 0, "passage": null}, {"id": 52, "section": "Unit 5｜勾選題目", "kind": "對話選擇", "source": "Unit 5 練習 p.37（紅勾題目）", "prompt": "Jill: There's a green check on the screen. Does that mean the transaction is completed?<br>Clerk: Yes, it does. Would you like me to print out your invoice?<br>Jill: Yes, please.<br>Clerk: ______", "choices": ["Here you are.", "You're welcome.", "That's very kind of you.", "I can't read your fingerprint."], "answer": 0, "passage": null}, {"id": 53, "section": "Unit 5｜勾選題目", "kind": "對話選擇", "source": "Unit 5 練習 p.37（紅勾題目）", "prompt": "Clerk: Your caramel macchiato is NT$150. Are you paying with your Starbucks app?<br>Customer: Yes, that's right. I want to collect my Stars.<br>Clerk: Got it. ______<br>Customer: Done.<br>Clerk: Thanks! Your Stars have been added.", "choices": ["Please pay in cash.", "You can keep the change.", "Don't pay with electronic money.", "Please tap your smartphone on the machine."], "answer": 3, "passage": null}, {"id": 54, "section": "Unit 5｜勾選題目", "kind": "對話選擇", "source": "Unit 5 練習 p.37（紅勾題目）", "prompt": "Clerk: The total is NT$1550.<br>Teresa: Okay, I'll pay with Google Pay.<br>Clerk: I can't scan it. ______ so that I can scan the code?<br>Teresa: Oh, sure. Is this better?<br>Clerk: Perfect! It went through. Here's your receipt.", "choices": ["Do you have a mobile barcode for the e-invoice?", "Could you adjust the screen brightness?"], "answer": 1, "passage": null}, {"id": 55, "section": "Unit 5｜勾選題目", "kind": "文法選擇", "source": "Unit 5 Multiple Choice p.139（紅勾題目，第 1 題）", "prompt": "It was Leo ______ helped me the most.", "choices": ["whom", "what", "when", "that"], "answer": 3, "passage": null}, {"id": 56, "section": "Unit 5｜勾選題目", "kind": "文法選擇", "source": "Unit 5 Multiple Choice p.139（紅勾題目，第 2 題）", "prompt": "I like the picture ______ by my little brother.", "choices": ["paint", "painting", "to paint", "painted"], "answer": 3, "passage": null}, {"id": 57, "section": "Unit 5｜勾選題目", "kind": "文法選擇", "source": "Unit 5 Multiple Choice p.139（紅勾題目，第 3 題）", "prompt": "It ______ yesterday that we had a math test.", "choices": ["is", "will be", "was", "has been"], "answer": 2, "passage": null}, {"id": 58, "section": "Unit 5｜勾選題目", "kind": "文法選擇", "source": "Unit 5 Multiple Choice p.139（紅勾題目，第 4 題）", "prompt": "The cake ______ by Grandma tastes so good.", "choices": ["make", "making", "to make", "made"], "answer": 3, "passage": null}, {"id": 59, "section": "Unit 5｜勾選題目", "kind": "文法選擇", "source": "Unit 5 Multiple Choice p.139（紅勾題目，第 5 題）", "prompt": "It was ______ that the movie started.", "choices": ["at 7 p.m.", "7 p.m.", "started at", "started"], "answer": 0, "passage": null}];
-const LETTERS = ["A","B","C","D"];
-let pool=[], current=0, answers={}, checked={}, mistakes=[];
-const $=id=>document.getElementById(id);
-function escapeHTML(text){return String(text).replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));}
-function shuffle(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
-function setupSections(){const counts={};BANK.forEach(q=>counts[q.section]=(counts[q.section]||0)+1);const names=["全部題庫","Unit 4｜圈選單字","Unit 4｜勾選題目","Unit 5｜圈選單字","Unit 5｜勾選題目"];$("sectionSelect").innerHTML=names.map(n=>n==="全部題庫"?`<option value="all">全部題庫（${BANK.length} 題）</option>`:`<option value="${n}">${n}（${counts[n]||0} 題）</option>`).join("");}
-function startRound(custom=null){const section=$("sectionSelect").value,order=$("modeSelect").value,count=$("countSelect").value;let items=custom?[...custom]:BANK.filter(q=>section==="all"||q.section===section);if(order==="random"||count!=="all")items=shuffle(items);if(count!=="all")items=items.slice(0,Math.min(Number(count),items.length));pool=items;current=0;answers={};checked={};mistakes=[];$("summaryPanel").style.display="none";render();}
-function render(){if(!pool.length)return;const q=pool[current];$("sectionBadge").textContent=q.section;$("progressCopy").textContent=`第 ${current+1} 題／共 ${pool.length} 題｜${q.kind}`;$("progressBar").style.width=`${((current+1)/pool.length)*100}%`;$("sourceText").textContent=q.source;$("questionText").innerHTML=q.prompt;const p=$("passageBox");if(q.passage){p.innerHTML=`<strong>閱讀短文</strong><br><br>${q.passage}`;p.style.display="block";}else{p.style.display="none";p.innerHTML="";}const selected=answers[q.id],isChecked=checked[q.id]===true;$("optionsBox").innerHTML=q.choices.map((choice,i)=>{let cls="option";if(selected===i)cls+=" selected";if(isChecked&&i===q.answer)cls+=" correct";if(isChecked&&selected===i&&i!==q.answer)cls+=" wrong";return `<label class="${cls}"><input type="radio" name="answer" value="${i}" ${selected===i?"checked":""}><span class="letter">${LETTERS[i]||i+1}</span><span class="option-text">${escapeHTML(choice)}</span></label>`;}).join("");document.querySelectorAll('input[name="answer"]').forEach(el=>el.addEventListener("change",e=>{answers[q.id]=Number(e.target.value);checked[q.id]=true;render();}));const fb=$("feedbackBox");fb.className="feedback";fb.textContent="";if(isChecked){if(selected===q.answer){fb.className="feedback show good";fb.textContent=`✓ 答對了！正確答案：${LETTERS[q.answer]||q.answer+1}．${q.choices[q.answer]}`;}else{fb.className="feedback show bad";fb.textContent=`✗ 正確答案：${LETTERS[q.answer]||q.answer+1}．${q.choices[q.answer]}`;}}$("prevBtn").disabled=current===0;$("nextBtn").disabled=current===pool.length-1;renderGrid();}
-function renderGrid(){$("questionGrid").innerHTML=pool.map((q,i)=>{let c="dot";if(i===current)c+=" active";if(answers[q.id]!==undefined)c+=" done";if(checked[q.id]&&answers[q.id]!==q.answer)c+=" wrong";return `<button class="${c}" data-index="${i}" title="第 ${i+1} 題">${i+1}</button>`;}).join("");document.querySelectorAll(".dot").forEach(b=>b.addEventListener("click",()=>{current=Number(b.dataset.index);render();$("quizPanel").scrollIntoView({behavior:"smooth",block:"start"});}));}
-function checkCurrent(){if(!pool.length)return;const q=pool[current],fb=$("feedbackBox");if(answers[q.id]===undefined){fb.className="feedback show info";fb.textContent="請先選擇一個答案。";return;}checked[q.id]=true;render();}
-function submitRound(){if(!pool.length)return;const answered=pool.filter(q=>answers[q.id]!==undefined).length,correct=pool.filter(q=>answers[q.id]===q.answer).length;mistakes=pool.filter(q=>answers[q.id]!==q.answer);$("scoreText").textContent=`${correct} / ${pool.length}`;$("scoreDetail").textContent=`已作答 ${answered} 題；答對 ${correct} 題；正確率 ${Math.round(correct/pool.length*100)}%。`;$("mistakeBox").innerHTML=mistakes.length?`<div class="mistakes"><strong>需複習：${mistakes.length} 題</strong><br>錯題或未作答題號：${mistakes.map(q=>pool.indexOf(q)+1).join("、")}</div>`:`<div class="mistakes"><strong>太棒了，這一回全數答對！</strong><br>可以改選其他單元或使用隨機模式再練一次。</div>`;$("summaryPanel").style.display="block";$("summaryPanel").scrollIntoView({behavior:"smooth",block:"start"});}
-$("startBtn").addEventListener("click",()=>startRound());$("prevBtn").addEventListener("click",()=>{if(current>0){current--;render();}});$("nextBtn").addEventListener("click",()=>{if(current<pool.length-1){current++;render();}});$("checkBtn").addEventListener("click",checkCurrent);$("submitBtn").addEventListener("click",submitRound);$("resetBtn").addEventListener("click",()=>{if(confirm("確定要清除本回所有作答紀錄嗎？")){answers={};checked={};mistakes=[];render();}});$("retryBtn").addEventListener("click",()=>{if(!mistakes.length){alert("本回沒有錯題可重練。");return;}$("modeSelect").value="random";$("countSelect").value="all";startRound(mistakes);$("quizPanel").scrollIntoView({behavior:"smooth",block:"start"});});$("newRoundBtn").addEventListener("click",()=>window.scrollTo({top:0,behavior:"smooth"}));
-setupSections();startRound();
+const quizData = [
+  {n:1, sec:'田徑', ref:'課本 19 頁', answer:'C', q:'目前男子組 110 公尺跨欄項目的世界紀錄，是由美國選手梅里特（Aries Merritt）於 2012 年所創下的？', opts:{A:'12.88 秒', B:'12.87 秒', C:'12.80 秒', D:'12.91 秒'}},
+  {n:2, sec:'田徑', ref:'課本 19 頁', answer:'B', q:'現在田徑跨欄比賽所用的欄架底座形式為？', opts:{A:'I 型', B:'L 型', C:'A 型', D:'Z 型'}},
+  {n:3, sec:'田徑', ref:'課本 20 頁', answer:'B', q:'下列哪一個不是正式的田徑跨欄比賽項目？', opts:{A:'110 公尺', B:'200 公尺', C:'400 公尺', D:'100 公尺'}},
+  {n:4, sec:'田徑', ref:'課本 20 頁', answer:'D', q:'田徑跨欄起跑與短距離起跑的動作技術相同，都是採取什麼樣的起跑姿勢？', opts:{A:'雙膝跪式', B:'坐式', C:'站立式', D:'蹲踞式'}},
+  {n:5, sec:'田徑', ref:'課本 20 頁', answer:'A', q:'田徑 110、100 公尺跨欄跑第一欄架時，競賽選手一般採用幾步？', opts:{A:'8 步', B:'9 步', C:'10 步', D:'11 步'}},
+  {n:6, sec:'田徑', ref:'課本 21 頁', answer:'B', q:'田徑跨欄技術中，在欄上姿勢膝關節形成幾度夾角分腿的姿勢？', opts:{A:'60 度', B:'90 度', C:'120 度', D:'150 度'}},
+  {n:7, sec:'田徑', ref:'課本 22 頁', answer:'C', q:'田徑跨欄闖欄跑的技術基本上與短距離跑的中間跑法技術類似，其技術的特點以下何者不是？', opts:{A:'重心高', B:'頻率快', C:'步幅小', D:'節奏性強'}},
+  {n:8, sec:'田徑', ref:'課本 22 頁', answer:'D', q:'優秀的田徑跨欄選手，100 公尺低欄或 110 公尺高欄，欄間跑以幾步為佳？', opts:{A:'6 步', B:'5 步', C:'4 步', D:'3 步'}},
+  {n:9, sec:'田徑', ref:'課本 23 頁', answer:'D', q:'田徑 400 公尺跨欄在全程跑動中，應採？', opts:{A:'強度跑', B:'衝刺跑', C:'間歇跑', D:'均速跑'}},
+  {n:10, sec:'田徑', ref:'課本 33 頁', answer:'C', q:'田徑高中男子 110 公尺跨欄項目，其欄架高度為？', opts:{A:'91.4 公分', B:'94.1 公分', C:'99.1 公分', D:'106.7 公分'}},
+  {n:11, sec:'籃球', ref:'課本 86 頁', answer:'A', q:'在一場籃球比賽中進攻方可能會失常，但防守卻不容易失常。籃球 60% 都要靠防守，而要有好的防守就必須具備？', opts:{A:'體力、意志力、企圖心及觀念', B:'意志力、企圖心及觀念', C:'體力、意志力和企圖心', D:'神力、意志力、企圖心及觀念'}},
+  {n:12, sec:'籃球', ref:'課本 77 頁', answer:'C', q:'國內「高中籃球聯賽」稱為？', opts:{A:'UBA', B:'CBA', C:'HBL', D:'SBL'}},
+  {n:13, sec:'籃球', ref:'課本 82 頁', answer:'C', q:'籃球的反方向掩護又稱為？', opts:{A:'正掩', B:'下掩', C:'逆掩護', D:'橫掩'}},
+  {n:14, sec:'籃球', ref:'課本 83 頁', answer:'A', q:'籃球戰術的掩護通常有誰做掩護？', opts:{A:'中鋒', B:'後衛', C:'小前鋒', D:'大前鋒'}},
+  {n:15, sec:'排球', ref:'課本 105 頁', answer:'C', q:'排球比賽除了攔網外，有幾次機會將球回擊過網？', opts:{A:'1 次', B:'2 次', C:'3 次', D:'4 次'}},
+  {n:16, sec:'排球', ref:'課本 105 頁', answer:'A', q:'排球項目是屬於哪一類型的運動？', opts:{A:'網／牆性球類運動', B:'挑戰類運動', C:'陣地攻守性球類運動', D:'標的性球類運動'}},
+  {n:17, sec:'排球', ref:'課本 105 頁', answer:'B', q:'排球比賽中，哪個位置的球員扮演整體攻擊手的角色，負責最貼近攻防來的任務？', opts:{A:'中間手', B:'舉球員', C:'攻擊手', D:'自由球員'}},
+  {n:18, sec:'排球', ref:'課本 105 頁', answer:'D', q:'排球隊伍選擇舉球員時，不需考慮下列何種因素？', opts:{A:'傳球能力', B:'敏捷性', C:'觀察能力', D:'身高須高於快攻手'}},
+  {n:19, sec:'排球', ref:'課本 106 頁', answer:'D', q:'在排球項目當中，哪一種舉球動作技術難度較高？', opts:{A:'正面高弧長球', B:'直上球', C:'單手舉球', D:'跳躍舉球'}},
+  {n:20, sec:'排球', ref:'課本 110 頁', answer:'C', q:'請問下圖為何種排球舉球動作？', opts:{A:'正面高弧長球', B:'直上球', C:'跳躍舉球', D:'背面高弧球'}},
+  {n:21, sec:'排球', ref:'課本 108 頁', answer:'B', q:'請問下圖為何種排球舉球動作？', opts:{A:'正面高弧長球', B:'直上球', C:'跳躍舉球', D:'背面高弧球'}},
+  {n:22, sec:'排球', ref:'課本 121 頁', answer:'D', q:'排球舉球時手部應該注意什麼？', opts:{A:'腕關節緊繃', B:'手指僵硬', C:'手掌觸球', D:'腕關節、手指放鬆、下沉'}},
+  {n:23, sec:'羽球', ref:'課本 131 頁', answer:'D', q:'在羽球正手殺球的擊球瞬間，應利用身體的哪些力量擊球？下列選項最能完整說明的是？', opts:{A:'腰部', B:'手腕', C:'肩膀', D:'腰部、手腕、肩膀'}},
+  {n:24, sec:'羽球', ref:'課本 130 頁', answer:'B', q:'羽球擊球的甜蜜點是指球拍何處的中心點？', opts:{A:'拍柄', B:'拍面', C:'前套', D:'中管'}},
+  {n:25, sec:'羽球', ref:'課本 130 頁', answer:'A', q:'羽球殺球引拍動作，若為右手持拍者，其重心落於？', opts:{A:'右腳', B:'左腳', C:'前腳', D:'後腳'}},
+  {n:26, sec:'羽球', ref:'課本 130 頁', answer:'B', q:'羽球殺球引拍動作，非持拍手指向來球的目的，何者為非？', opts:{A:'平衡身體', B:'保持美觀', C:'鎖定擊球點'}},
+  {n:27, sec:'羽球', ref:'課本 133 頁', answer:'D', q:'羽球正手放小球擊球時，應盡可能使球？', opts:{A:'高於網上 60 公分', B:'高於網上 90 公分', C:'高於網上 120 公分', D:'使球貼於網子上方飛過'}},
+  {n:28, sec:'羽球', ref:'課本 142 頁', answer:'A', q:'羽球雙打比賽，第二局由誰首先發球？', opts:{A:'第一局獲勝方', B:'第一局落敗方', C:'依照次序輪流發球'}},
+  {n:29, sec:'羽球', ref:'課本 142 頁', answer:'C', q:'羽球比賽裁判判決重新發球，是指由誰進行發球？', opts:{A:'領先的一方', B:'落後的一方', C:'最後發球者'}},
+  {n:30, sec:'羽球', ref:'課本 142 頁', answer:'A', q:'羽球比賽時，當發生羽球破散且分離的情形，裁判應如何判決？', opts:{A:'重新發球', B:'繼續比賽', C:'發球方失一分', D:'接球方失一分'}},
+  {n:31, sec:'羽球', ref:'課本 131 頁', answer:'B', q:'羽球正手殺球的擊球點應位於？', opts:{A:'腰肩之間', B:'身體前上方', C:'腰部以下', D:'肩膀位置'}},
+  {n:32, sec:'羽球', ref:'課本 101 頁', answer:'A', q:'臺灣首位在世界羽壇女單排名第一的運動員是？', opts:{A:'戴資穎', B:'鄭韶婕', C:'李佳馨', D:'馬琳'}},
+  {n:33, sec:'桌球', ref:'課本 151 頁', answer:'B', q:'桌球搓球須先掌握好擊球的時機，一般搓球的擊球時間是在來球的？', opts:{A:'上升前期', B:'上升後期', C:'最高點期', D:'下降前期'}},
+  {n:34, sec:'桌球', ref:'課本 166 頁', answer:'A', q:'桌球運動的站位，遠檯是指距離桌球檯？', opts:{A:'100 公分以外', B:'70～100 公分', C:'50～70 公分', D:'50 公分以內'}},
+  {n:35, sec:'桌球', ref:'課本 166 頁', answer:'D', q:'桌球運動的站位，近檯是指距離桌球檯？', opts:{A:'100 公分以外', B:'70～100 公分', C:'50～70 公分', D:'50 公分以內'}},
+  {n:36, sec:'桌球', ref:'課本 155 頁', answer:'B', q:'桌球弧圈球，球拍應擊球的哪個部位？', opts:{A:'頂部', B:'中上部', C:'中部', D:'中下部'}},
+  {n:37, sec:'桌球', ref:'課本 153 頁', answer:'A', q:'桌球搓球時，拍面應稍向後仰約幾度？', opts:{A:'30 度', B:'45 度', C:'60 度', D:'90 度'}},
+  {n:38, sec:'桌球', ref:'課本 165 頁', answer:'D', q:'桌球比賽一局打完，每局的休息時間為？', opts:{A:'4 分鐘', B:'3 分鐘', C:'2 分鐘', D:'1 分鐘'}},
+  {n:39, sec:'桌球', ref:'課本 165 頁', answer:'C', q:'桌球比賽中，每局每完成幾分，有短暫的時間可用毛巾擦汗？', opts:{A:'4 分', B:'5 分', C:'6 分', D:'7 分'}},
+  {n:40, sec:'桌球', ref:'課本 151 頁', answer:'C', q:'桌球技術中接發球時好用的過渡技術是指？', opts:{A:'弧圈球', B:'放高球', C:'搓球', D:'殺球'}}
+];
+
+const sectionsEl = document.getElementById('sections');
+const state = {};
+
+function groupBySection(data){
+  const grouped = {};
+  data.forEach(item=>{
+    if(!grouped[item.sec]) grouped[item.sec]=[];
+    grouped[item.sec].push(item);
+  });
+  return grouped;
+}
+
+function render(){
+  const grouped = groupBySection(quizData);
+  sectionsEl.innerHTML = '';
+  Object.entries(grouped).forEach(([sec, items])=>{
+    const section = document.createElement('section');
+    section.className = 'section';
+    section.dataset.section = sec;
+    section.innerHTML = `<h2>${sec} <span class="pill">${items.length} 題</span></h2>`;
+
+    items.forEach(item=>{
+      const card = document.createElement('div');
+      card.className = 'q-card';
+      card.id = `q-${item.n}`;
+      card.dataset.no = item.n;
+      card.dataset.answer = item.answer;
+      card.dataset.status = 'unanswered';
+
+      const optionsHtml = Object.entries(item.opts).map(([key, text]) => `
+        <label class="option">
+          <input type="radio" name="q${item.n}" value="${key}" onchange="selectAnswer(${item.n}, '${key}')">
+          <span><strong>${key}.</strong> ${text}</span>
+        </label>
+      `).join('');
+
+      card.innerHTML = `
+        <div class="q-head">
+          <div class="q-no">${item.n}</div>
+          <div>
+            <div class="q-title">${item.q}</div>
+            <div class="from">${item.ref}</div>
+          </div>
+        </div>
+        <div class="options">${optionsHtml}</div>
+        <div class="feedback" id="fb-${item.n}"></div>
+      `;
+      section.appendChild(card);
+    });
+    sectionsEl.appendChild(section);
+  });
+  updateSummary();
+}
+
+function selectAnswer(no, choice){
+  const item = quizData.find(q => q.n === no);
+  state[no] = choice;
+  const fb = document.getElementById(`fb-${no}`);
+  const card = document.getElementById(`q-${no}`);
+  if(choice === item.answer){
+    fb.className = 'feedback show correct';
+    fb.innerHTML = `答對了，正確答案是 <strong>${item.answer}</strong>。`;
+    card.dataset.status = 'correct';
+  }else{
+    fb.className = 'feedback show wrong';
+    fb.innerHTML = `答錯了，你選的是 <strong>${choice}</strong>；正確答案是 <strong>${item.answer}</strong>。`;
+    card.dataset.status = 'wrong';
+  }
+  updateSummary();
+}
+
+function updateSummary(){
+  const total = quizData.length;
+  let answered = 0, correct = 0, wrong = 0;
+  quizData.forEach(item => {
+    const value = state[item.n];
+    if(value){
+      answered++;
+      if(value === item.answer) correct++;
+      else wrong++;
+    }
+  });
+  document.getElementById('totalCount').textContent = total;
+  document.getElementById('answeredCount').textContent = answered;
+  document.getElementById('correctCount').textContent = correct;
+  document.getElementById('wrongCount').textContent = wrong;
+}
+
+function showAll(){
+  document.querySelectorAll('.q-card').forEach(card => card.classList.remove('hidden'));
+}
+
+function showWrongOnly(){
+  document.querySelectorAll('.q-card').forEach(card => {
+    card.classList.toggle('hidden', card.dataset.status !== 'wrong');
+  });
+}
+
+function jumpToUnanswered(){
+  const first = quizData.find(item => !state[item.n]);
+  if(!first){
+    alert('目前所有題目都已作答。');
+    return;
+  }
+  showAll();
+  document.getElementById(`q-${first.n}`).scrollIntoView({behavior:'smooth', block:'center'});
+}
+
+function checkAll(){
+  const unanswered = quizData.filter(item => !state[item.n]).length;
+  const correct = quizData.filter(item => state[item.n] && state[item.n] === item.answer).length;
+  const wrong = quizData.filter(item => state[item.n] && state[item.n] !== item.answer).length;
+  const answered = correct + wrong;
+  const rate = answered ? Math.round((correct / quizData.length) * 100) : 0;
+  alert(`作答完成統計\n\n總題數：${quizData.length} 題\n已作答：${answered} 題\n未作答：${unanswered} 題\n答對：${correct} 題\n答錯：${wrong} 題\n得分率：${rate}%`);
+}
+
+function resetQuiz(){
+  if(!confirm('確定要清除目前作答紀錄嗎？')) return;
+  Object.keys(state).forEach(k => delete state[k]);
+  document.querySelectorAll('input[type="radio"]').forEach(input => input.checked = false);
+  document.querySelectorAll('.feedback').forEach(fb => {
+    fb.className = 'feedback';
+    fb.textContent = '';
+  });
+  document.querySelectorAll('.q-card').forEach(card => {
+    card.dataset.status = 'unanswered';
+    card.classList.remove('hidden');
+  });
+  updateSummary();
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+render();
 </script>
 </body>
 </html>
